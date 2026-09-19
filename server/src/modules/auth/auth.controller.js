@@ -1,5 +1,5 @@
 import userModel from "../../../db/models/user.model.js";
-import validateRegister from "./auth.validation.js";
+import { validateRegister } from "./auth.validation.js";
 import bcrypt from "bcrypt";
 
 const register = async (req, res) => {
