@@ -1,5 +1,5 @@
 import express from "express";
-import { register } from "./auth.controller.js";
+import { login, register } from "./auth.controller.js";
 
 export const authRoutes = express().router;
 
@@ -7,7 +7,7 @@ authRoutes.use(express.json());
 
 authRoutes.post("/auth/register", register);
 
-// authRoutes.post("/auth/login");
+authRoutes.post("/auth/login", login);
 
 // authRoutes.get("/auth/me");
 
