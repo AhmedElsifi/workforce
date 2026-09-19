@@ -33,3 +33,23 @@ export const validateRegister = ({ fname, lname, email, password }) => {
   return errors;
 };
 
+export const validateLogin = ({ email, password }) => {
+  const errors = {};
+
+  if (!email || !email.trim()) {
+    errors.email = "Email is required";
+  }
+
+  if (!password) {
+    errors.password = "Password is required";
+  }
+
+  // Email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (email && !emailRegex.test(email.trim())) {
+    errors.email = "Invalid email format";
+  }
+
+  return errors;
+};
