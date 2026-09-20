@@ -88,13 +88,27 @@ let login = async (req, res) => {
       _id: existingUser._id,
       role: existingUser.role,
     },
-    "73766ae16ac336f260d9c83e43ff1ad52bc403c1ecc4e4815f13253cea171619",
+    process.env.JWT_SECRET,
     {
       expiresIn: "1d",
     },
   );
 
-  return res.json({ success: true, token });
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false,
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+
+  if (existingUser.role === "admin") {
+    return res.redirect("/pages/admin/dashboard.html");
+  }
+
+  if (existingUser.role === "manager") {
+    return res.redirect("/pages/manager/dashboard.html");
+  }
+
+  return res.redirect("/pages/employee/dashboard.html");
 };
 
 let getCurrentUser = (req, res) => {};

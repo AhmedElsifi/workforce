@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap");
+
+/* ===== Reset ===== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== Global ===== */
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  line-height: 1.5;
+  background-color: #fff;
+  color: #222;
+}
+
+/* ===== Typography ===== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.2;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+/* ===== Links ===== */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ===== Images ===== */
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ===== Forms ===== */
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* ===== Lists ===== */
+
+ul,
+ol {
+  list-style: none;
+}
