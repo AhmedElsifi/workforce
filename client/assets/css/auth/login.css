@@ -4,7 +4,6 @@ main {
   min-height: 100vh;
 }
 
-/* --- Left Panel --- */
 .left-panel {
   background-color: #0f172a;
   color: #ffffff;
@@ -16,7 +15,6 @@ main {
   align-items: center;
 }
 
-/* Logo */
 .logo {
   display: flex;
   align-items: center;
@@ -38,7 +36,6 @@ main {
   flex-shrink: 0;
 }
 
-/* Content Area */
 .content {
   margin: auto 0;
   max-width: 540px;
@@ -71,7 +68,6 @@ main {
   margin-bottom: 40px;
 }
 
-/* Live Dashboard */
 .live {
   background-color: #1e293b;
   border-radius: 12px;
@@ -136,7 +132,6 @@ main {
   font-weight: 500;
 }
 
-/* third card */
 .card:nth-child(3) h5 {
   color: #f59e0b;
 }
@@ -146,7 +141,6 @@ main {
   color: #64748b;
 }
 
-/* --- Right Panel --- */
 .right-panel {
   background-color: #ffffff;
   width: 50%;
@@ -177,7 +171,39 @@ main {
   line-height: 1.5;
 }
 
-/* Form Elements */
+#login-error {
+  display: block;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 4px solid #dc2626;
+  color: #b91c1c;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  animation: error-appear 0.2s ease-out;
+}
+
+#login-error:empty {
+  display: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+@keyframes error-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 #login-form {
   display: flex;
   flex-direction: column;
@@ -216,7 +242,6 @@ main {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
-/* --- Password --- */
 .input-field:nth-child(2) {
   position: relative;
 }
@@ -235,7 +260,6 @@ main {
   text-decoration: underline;
 }
 
-/* Submit Button */
 input[type="submit"] {
   background-color: #4f46e5;
   color: #ffffff;
@@ -259,7 +283,6 @@ input[type="submit"]:active {
   background-color: #3730a3;
 }
 
-/* --- Responsive --- */
 @media (max-width: 900px) {
   main {
     flex-direction: column;

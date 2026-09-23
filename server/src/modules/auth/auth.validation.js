@@ -1,4 +1,4 @@
-export const validateRegister = ({ fname, lname, email, password }) => {
+export const validateCreds = ({ fname, lname, email, password }) => {
   const errors = {};
 
   // Required fields

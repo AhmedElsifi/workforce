@@ -1,14 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap");
 
-/* ===== Reset ===== */
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
-/* ===== Global ===== */
 
 html {
   font-size: 16px;
@@ -20,8 +16,6 @@ body {
   background-color: #fff;
   color: #222;
 }
-
-/* ===== Typography ===== */
 
 h1,
 h2,
@@ -36,21 +30,15 @@ p {
   margin-bottom: 1rem;
 }
 
-/* ===== Links ===== */
-
 a {
   color: inherit;
   text-decoration: none;
 }
 
-/* ===== Images ===== */
-
 img {
   display: block;
   max-width: 100%;
 }
-
-/* ===== Forms ===== */
 
 button,
 input,
@@ -63,225 +51,7 @@ button {
   cursor: pointer;
 }
 
-/* ===== Lists ===== */
-
 ul,
 ol {
   list-style: none;
-}
-
-/* ===== NavBar ===== */
-
-/* Base Resets */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
-}
-
-body {
-  background-color: #f5f7fa;
-}
-
-/* Main Layout */
-.app-container {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-}
-
-/* ================================
-   SIDEBAR STYLES
-   ================================ */
-.sidebar {
-  width: 280px;
-  background-color: #1a1e2d;
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  flex-shrink: 0;
-}
-
-/* Logo Section */
-.logo-section {
-  padding: 24px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo-icon {
-  background-color: #6366f1;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-}
-
-.logo-text h1 {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  line-height: 1.2;
-}
-
-.logo-text span {
-  font-size: 10px;
-  font-weight: 600;
-  color: #8b92a5;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-/* Navigation Menu */
-.nav-menu {
-  padding: 0 16px;
-  flex-grow: 1;
-}
-
-.nav-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #8b92a5;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin: 24px 0 12px 8px;
-}
-
-.nav-menu ul {
-  list-style: none;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px;
-  border-radius: 8px;
-  color: #a0a5b9;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 4px;
-  transition: all 0.2s ease;
-}
-
-.nav-item:hover {
-  background-color: #262c41;
-  color: #ffffff;
-}
-
-.nav-item.active {
-  background-color: #262c41;
-  color: #ffffff;
-}
-
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.nav-icon {
-  width: 18px;
-  height: 18px;
-}
-
-/* Badge (e.g., "2 Pending") */
-.badge {
-  background-color: #6366f1;
-  color: #ffffff;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 12px;
-}
-
-/* User Profile Section (Bottom) */
-.user-profile {
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid #262c41;
-  margin-top: auto;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #6366f1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 14px;
-  color: #ffffff;
-}
-
-.user-text h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 2px;
-}
-
-.user-text p {
-  font-size: 12px;
-  color: #8b92a5;
-}
-
-.logout-btn {
-  color: #8b92a5;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s ease;
-}
-
-.logout-btn:hover {
-  color: #ffffff;
-}
-
-/* ================================
-   MAIN CONTENT PLACEHOLDER
-   ================================ */
-.main-content {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f8fafc;
-  color: #94a3b8;
-  padding: 40px;
-}
-
-.placeholder-text {
-  text-align: center;
-}
-
-.placeholder-text h2 {
-  font-size: 24px;
-  margin-bottom: 8px;
-  color: #64748b;
-}
-
-.placeholder-text p {
-  font-size: 16px;
 }
