@@ -1,3 +1,21 @@
 import express from "express";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
+import { adminDashboard } from "./dashboard.controller.js";
 
 export const dashboardRoutes = express().router;
+
+dashboardRoutes.get(
+  "/admin/dashboard",
+  authenticate,
+  authorize("admin"),
+  adminDashboard,
+);
+
+dashboardRoutes.get(
+  "/pages/admin/dashboard.html",
+  authenticate,
+  authorize("admin"),
+  (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/pages/admin/dashboard.html"));
+  },
+);

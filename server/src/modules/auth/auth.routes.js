@@ -1,14 +1,10 @@
 import express from "express";
-import { login, register } from "./auth.controller.js";
+import { getCurrentUser, login } from "./auth.controller.js";
 
 export const authRoutes = express().router;
 
-authRoutes.use(express.json());
-
-authRoutes.post("/auth/register", register);
-
 authRoutes.post("/auth/login", login);
 
-// authRoutes.get("/auth/me");
+authRoutes.get("/auth/me", getCurrentUser);
 
 // authRoutes.patch("/auth/me");

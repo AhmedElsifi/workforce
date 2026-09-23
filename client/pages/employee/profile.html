@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WorkForce Portal - User Profile</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/employee/sidebar.css" />
+    <link rel="stylesheet" href="../../assets/css/employee/profile.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Mobile Top Bar -->
+      <header class="mobile-top-bar">
+        <div class="brand">WorkForce</div>
+        <div class="user-actions">
+          <span>David Chen</span>
+          <span class="material-symbols-outlined">logout</span>
+        </div>
+      </header>
+
+      <!-- Desktop Sidebar -->
+      <aside class="sidebar">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <span class="material-symbols-outlined">corporate_fare</span>
+          </div>
+          <div class="logo-text">
+            <h1>WorkForce</h1>
+            <span>Employee Portal</span>
+          </div>
+        </div>
+
+        <nav class="nav-menu">
+          <div class="nav-label">Navigation</div>
+          <ul>
+            <li>
+              <a href="./dashboard.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon"
+                    >dashboard</span
+                  >
+                  <span>Dashboard</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./attendance.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">
+                    history
+                  </span>
+                  <span>Attendance</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./leave-requests.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">
+                    description
+                  </span>
+                  <span>My Leave Requests</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./profile.html" class="nav-item active">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">person</span>
+                  <span>My Profile</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="user-profile">
+          <div class="user-info">
+            <div class="avatar">DC</div>
+            <div class="user-text">
+              <h4>David Chen</h4>
+              <p>Field Specialist</p>
+            </div>
+          </div>
+          <div class="logout-btn">
+            <span class="material-symbols-outlined">logout</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="profile-container">
+          <header class="profile-header">
+            <div>
+              <span class="breadcrumb">Account & Security</span>
+              <h1>My Employee Profile</h1>
+              <p class="subtitle">
+                Manage your personal information and employment details.
+              </p>
+            </div>
+            <button type="submit" form="profileForm" class="btn-primary">
+              <span class="material-symbols-outlined" style="font-size: 18px"
+                >save</span
+              >
+              Save Profile Changes
+            </button>
+          </header>
+
+          <form id="profileForm" class="profile-form">
+            <section class="form-section">
+              <h3>Personal Information</h3>
+              <div class="form-grid">
+                <div class="input-group">
+                  <label for="fname">First Name</label>
+                  <input
+                    type="text"
+                    id="fname"
+                    name="fname"
+                    placeholder="Enter first name"
+                    required
+                  />
+                </div>
+                <div class="input-group">
+                  <label for="lname">Last Name</label>
+                  <input
+                    type="text"
+                    id="lname"
+                    name="lname"
+                    placeholder="Enter last name"
+                    required
+                  />
+                </div>
+                <div class="input-group full-width">
+                  <label for="email">Email Address</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter email address"
+                    required
+                  />
+                </div>
+                <div class="input-group full-width">
+                  <label for="password">Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter new password"
+                  />
+                  <small
+                    >Leave blank if you do not wish to change your
+                    password.</small
+                  >
+                </div>
+              </div>
+            </section>
+          </form>
+
+          <section class="form-section read-only-section">
+            <div class="section-header">
+              <h3>Employment Details</h3>
+              <span class="badge badge-readonly">
+                <span class="material-symbols-outlined" style="font-size: 14px"
+                  >lock</span
+                >
+                Managed by HR
+              </span>
+            </div>
+
+            <div class="data-grid">
+              <div class="data-group">
+                <span class="data-label">Position</span>
+                <!-- ID for position -->
+                <span class="data-value" id="view-position"></span>
+              </div>
+              <div class="data-group">
+                <span class="data-label">Department</span>
+                <!-- ID for department -->
+                <span class="data-value" id="view-department"></span>
+              </div>
+              <div class="data-group">
+                <span class="data-label">Role</span>
+                <!-- ID for role -->
+                <span class="data-value" id="view-role"></span>
+              </div>
+              <div class="data-group">
+                <span class="data-label">Salary</span>
+                <!-- ID for salary -->
+                <span class="data-value" id="view-salary"></span>
+              </div>
+              <div class="data-group">
+                <span class="data-label">Employment Status</span>
+                <!-- ID for employment status -->
+                <span
+                  class="data-value status-active-text"
+                  id="view-status"
+                ></span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- Mobile Bottom Navigation -->
+      <nav class="mobile-bottom-nav">
+        <a href="./dashboard.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Home</span>
+        </a>
+        <a href="./attendance.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">history</span>
+          <span>Attendance</span>
+        </a>
+        <a href="./leave-requests.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">description</span>
+          <span>Leave</span>
+        </a>
+        <a href="./profile.html" class="mobile-nav-item active">
+          <span class="material-symbols-outlined">person</span>
+          <span>Profile</span>
+        </a>
+      </nav>
+    </div>
+    <script
+      src="../../assets/js/employee/profile.js"
+      type="module"
+      defer
+    ></script>
+  </body>
+</html>

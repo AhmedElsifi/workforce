@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./assets/css/global.css" />
+    <link rel="stylesheet" href="./assets/css/auth/login.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <title>WorkForce | Login</title>
+  </head>
+  <body>
+    <main>
+      <div class="left-panel">
+        <div class="logo">
+          <div class="icon">
+            <span class="material-symbols-outlined">groups</span>
+          </div>
+          WorkForce
+        </div>
+        <div class="content">
+          <p class="tag">Real-Time SME Operations Platform</p>
+          <h1>Intelligent roster, shifts, and compliance orchestration.</h1>
+          <p>
+            Empowering growing enterprises to streamline attendance, simplify
+            department assignments, and maintain auditable payroll workflows
+            with zero friction.
+          </p>
+          <div class="live">
+            <div class="live-top"><span></span>Live Shift SnapShot</div>
+            <hr />
+            <div class="live-bottom">
+              <div class="card">
+                <p>On-Duty</p>
+                <h3>42/45</h3>
+                <div>
+                  <h5>+ 93.3% check-in</h5>
+                </div>
+              </div>
+              <div class="card">
+                <p>Attendance</p>
+                <h3>96.8%</h3>
+                <div>
+                  <h5>↑ +1.4% vs avg</h5>
+                </div>
+              </div>
+              <div class="card">
+                <p>Pending Req</p>
+                <h3>7 Tasks</h3>
+                <div>
+                  <h5>● 4 PTO, 3 Exp</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="copyright">&copy; 2026 WorkForce Technologies Inc.</div>
+      </div>
+      <div class="right-panel">
+        <h1>Welcome back</h1>
+        <h3>Enter your organization credentials to access your workspace.</h3>
+
+        <p id="login-error"></p>
+
+        <form id="login-form">
+          <div class="input-field">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" />
+          </div>
+          <div class="input-field">
+            <a href="./password-reset.html">Forgot Password</a>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" />
+          </div>
+          <input type="submit" value="Sign In to Dashboard" />
+        </form>
+      </div>
+    </main>
+    <script src="./assets/js/auth/login.js" defer></script>
+  </body>
+</html>
