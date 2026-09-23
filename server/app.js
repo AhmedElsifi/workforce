@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { employeesRoutes } from "./src/modules/employees/employees.routes.js";
 import { dashboardRoutes } from "./src/modules/dashboard/dashboard.routes.js";
 import cors from "cors";
+import { seedData } from "./DB seeder.js";
 
 dbConnection;
 
@@ -17,6 +18,9 @@ app.use(
     credentials: true,
   }),
 );
+
+// call this function once and then comment it again (used to add dummy data to the database):
+// seedData();
 
 app.use(express.json());
 app.use(cookieParser());
