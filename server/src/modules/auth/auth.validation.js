@@ -1,4 +1,4 @@
-export const validateRegister = ({ fname, lname, email, password }) => {
+export const validateCreds = ({ fname, lname, email, password }) => {
   const errors = {};
 
   // Required fields
@@ -52,4 +52,13 @@ export const validateLogin = ({ email, password }) => {
   }
 
   return errors;
+};
+// addtion
+export const validateRegister = ({ fname, lname, email, password }) => {
+  return validateCreds({
+    fname,
+    lname,
+    email,
+    password,
+  });
 };

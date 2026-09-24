@@ -1,20 +1,27 @@
 import bcrypt from "bcrypt";
 import userModel from "../../../db/models/user.model.js";
 import { validateRegister } from "../auth/auth.validation.js";
+
+const employeeProfile = (req, res) => {
+  res.json({ message: "Success Admin" });
+};
+
 const createEmployee = async (req, res) => {
   const userData = req.body;
-  // Validate employee data
+
   const errors = validateRegister(userData);
+
   if (Object.keys(errors).length > 0) {
     return res.status(400).json({
       success: false,
       errors,
     });
   }
-  // Check if email already exists
+
   const existingUser = await userModel.findOne({
     email: userData.email.toLowerCase().trim(),
   });
+
   if (existingUser) {
     return res.status(409).json({
       success: false,
@@ -23,9 +30,9 @@ const createEmployee = async (req, res) => {
       },
     });
   }
-  // Hash password
+
   const hashedPassword = await bcrypt.hash(userData.password, 8);
-  // Create employee
+
   const employee = await userModel.create({
     fname: userData.fname.trim(),
     lname: userData.lname.trim(),
@@ -36,21 +43,26 @@ const createEmployee = async (req, res) => {
     department: userData.department,
     salary: userData.salary || 0,
     employmentStatus: "active",
-  })
-  // Don't return password
+  });
+
   const employeeResponse = employee.toObject();
   delete employeeResponse.password;
+
   return res.status(201).json({
     success: true,
     employee: employeeResponse,
   });
 };
+
 const getEmployees = async (req, res) => {
   const { search, department, role, status } = req.query;
+
   const filter = {};
+
   if (department) filter.department = department;
   if (role) filter.role = role;
   if (status) filter.employmentStatus = status;
+
   if (search) {
     filter.$or = [
       { fname: { $regex: search, $options: "i" } },
@@ -59,20 +71,24 @@ const getEmployees = async (req, res) => {
       { position: { $regex: search, $options: "i" } },
     ];
   }
+
   const employees = await userModel
     .find(filter)
     .select("-password")
     .populate("department", "name");
+
   return res.json({
     success: true,
     employees,
   });
 };
+
 const getEmployeeById = async (req, res) => {
   const employee = await userModel
     .findById(req.params.id)
     .select("-password")
     .populate("department", "name");
+
   if (!employee) {
     return res.status(404).json({
       success: false,
@@ -81,11 +97,13 @@ const getEmployeeById = async (req, res) => {
       },
     });
   }
+
   return res.json({
     success: true,
     employee,
   });
 };
+
 const updateEmployee = async (req, res) => {
   const {
     position,
@@ -94,6 +112,7 @@ const updateEmployee = async (req, res) => {
     department,
     employmentStatus,
   } = req.body;
+
   const employee = await userModel
     .findByIdAndUpdate(
       req.params.id,
@@ -106,7 +125,7 @@ const updateEmployee = async (req, res) => {
       },
       {
         new: true,
-      }
+      },
     )
     .select("-password");
 
@@ -134,7 +153,7 @@ const deactivateEmployee = async (req, res) => {
       },
       {
         new: true,
-      }
+      },
     )
     .select("-password");
 
@@ -152,7 +171,9 @@ const deactivateEmployee = async (req, res) => {
     employee,
   });
 };
+
 export {
+  employeeProfile,
   createEmployee,
   getEmployees,
   getEmployeeById,
