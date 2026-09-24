@@ -1,13 +1,17 @@
-const express = require('express');
-const router = express.Router();
-const leaveController = require('./leaveRequests.controller');
+import express from "express";
+import {
+	createLeaveRequest,
+	getMyLeaveRequests,
+	getPendingLeaveRequests,
+	updateLeaveStatus,
+} from "./leaveRequests.controller.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 
-// Employee routes
-router.post('/', leaveController.createLeaveRequest);
-router.get('/my-requests', leaveController.getMyLeaveRequests);
+const leaveRoutes = express.Router();
 
-// Manager routes
-router.get('/pending', leaveController.getPendingLeaveRequests);
-router.patch('/:id/status', leaveController.updateLeaveStatus);
+leaveRoutes.post("/", authenticate, authorize("employee"), createLeaveRequest);
+leaveRoutes.get("/my-requests", authenticate, authorize("employee"), getMyLeaveRequests);
+leaveRoutes.get("/pending", authenticate, authorize("manager"), getPendingLeaveRequests);
+leaveRoutes.patch("/:id/status", authenticate, authorize("manager"), updateLeaveStatus);
 
-module.exports = router;
+export default leaveRoutes;

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WorkForce Admin Console</title>
 
-    <!-- Google Material Symbols Link -->
     <link
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
       rel="stylesheet"
@@ -14,8 +13,16 @@
     <link rel="stylesheet" href="../../assets/css/admin/dashboard.css" />
     <link rel="stylesheet" href="../../assets/css/admin/sidebar.css" />
   </head>
-  <body>
+  <body class="dashboard-page">
     <div class="app-container">
+      <header class="mobile-top-bar">
+        <div class="brand">WorkForce</div>
+        <div class="user-actions">
+          <span id="admin-username-mobile"></span>
+          <span class="material-symbols-outlined">settings</span>
+        </div>
+      </header>
+
       <aside class="sidebar">
         <div class="logo-section">
           <div class="logo-icon">
@@ -31,7 +38,7 @@
           <div class="nav-label">Main Navigation</div>
           <ul>
             <li>
-              <a href="#" class="nav-item active">
+              <a href="./dashboard.html" class="nav-item active">
                 <div class="nav-left">
                   <span class="material-symbols-outlined nav-icon"
                     >dashboard</span
@@ -44,43 +51,29 @@
               </a>
             </li>
             <li>
-              <a href="#" class="nav-item">
+              <a href="./employees.html" class="nav-item">
                 <div class="nav-left">
                   <span class="material-symbols-outlined nav-icon">group</span>
                   <span>Employee Directory & CRUD</span>
                 </div>
-                <span class="badge badge-count">1,248</span>
               </a>
             </li>
             <li>
-              <a href="#" class="nav-item">
+              <a href="./departments.html" class="nav-item">
                 <div class="nav-left">
                   <span class="material-symbols-outlined nav-icon">domain</span>
                   <span>Departments & Structure</span>
                 </div>
-                <span class="badge badge-count">16</span>
               </a>
             </li>
             <li>
-              <a href="#" class="nav-item">
-                <div class="nav-left">
-                  <span class="material-symbols-outlined nav-icon"
-                    >payments</span
-                  >
-                  <span>Payroll Run & Rates</span>
-                </div>
-                <span class="badge badge-pending">Pending</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="nav-item">
+              <a href="./audit.html" class="nav-item">
                 <div class="nav-left">
                   <span class="material-symbols-outlined nav-icon"
                     >security</span
                   >
                   <span>System Audit & Compliance</span>
                 </div>
-                <span class="badge badge-audit">Audit</span>
               </a>
             </li>
           </ul>
@@ -88,10 +81,10 @@
 
         <div class="admin-user-profile">
           <div class="user-info">
-            <div class="avatar">ER</div>
+            <div class="avatar" id="admin-avatar">--</div>
             <div class="user-text">
-              <h4>Elena Ramos</h4>
-              <p>Super Admin • HR Ops</p>
+              <h4 id="admin-username">Loading...</h4>
+              <p>Admin</p>
             </div>
           </div>
           <div class="settings-btn">
@@ -101,11 +94,115 @@
       </aside>
 
       <main class="main-content">
-        <div class="placeholder-text">
-          <h2>Admin Page Content Area</h2>
-          <p>Place your dashboard, tables, or forms here.</p>
+        <div class="dashboard">
+          <div class="dashboard-header">
+            <h2>Admin Dashboard</h2>
+            <p>A real-time snapshot of your organization</p>
+          </div>
+
+          <section class="kpi-grid" id="kpi-grid">
+            <article class="kpi-card">
+              <div class="kpi-icon kpi-icon-blue">
+                <span class="material-symbols-outlined">groups</span>
+              </div>
+              <div class="kpi-body">
+                <p class="kpi-label">Total Employees</p>
+                <h3 class="kpi-value" id="kpi-total">--</h3>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-icon kpi-icon-green">
+                <span class="material-symbols-outlined">check_circle</span>
+              </div>
+              <div class="kpi-body">
+                <p class="kpi-label">Active</p>
+                <h3 class="kpi-value" id="kpi-active">--</h3>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-icon kpi-icon-red">
+                <span class="material-symbols-outlined">cancel</span>
+              </div>
+              <div class="kpi-body">
+                <p class="kpi-label">Inactive</p>
+                <h3 class="kpi-value" id="kpi-inactive">--</h3>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-icon kpi-icon-amber">
+                <span class="material-symbols-outlined">pending_actions</span>
+              </div>
+              <div class="kpi-body">
+                <p class="kpi-label">Pending Leave Requests</p>
+                <h3 class="kpi-value" id="kpi-pending-leave">--</h3>
+              </div>
+            </article>
+          </section>
+
+          <div class="dashboard-grid">
+            <section class="panel">
+              <h3 class="panel-title">Today's Attendance Overview</h3>
+              <div class="attendance-overview">
+                <div class="attendance-rate-ring">
+                  <div class="ring" id="attendance-ring">
+                    <span id="attendance-rate-text">0%</span>
+                  </div>
+                  <p>Clock-in Rate</p>
+                </div>
+                <div class="attendance-stats">
+                  <div class="attendance-stat">
+                    <span class="dot dot-present"></span>
+                    <span>Present</span>
+                    <strong id="attendance-present">0</strong>
+                  </div>
+                  <div class="attendance-stat">
+                    <span class="dot dot-absent"></span>
+                    <span>Absent</span>
+                    <strong id="attendance-absent">0</strong>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <h3 class="panel-title">Department Distribution</h3>
+              <ul class="dept-list" id="dept-distribution">
+                <li class="empty-state">Loading departments...</li>
+              </ul>
+            </section>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header-row">
+              <h3 class="panel-title">Recent Activity</h3>
+              <a href="./audit.html" class="panel-link">View full audit log →</a>
+            </div>
+            <ul class="activity-feed" id="activity-feed">
+              <li class="empty-state">Loading recent activity...</li>
+            </ul>
+          </section>
         </div>
       </main>
+
+      <nav class="mobile-bottom-nav">
+        <a href="./dashboard.html" class="mobile-nav-item active">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="./employees.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">group</span>
+          <span>Employees</span>
+        </a>
+        <a href="./departments.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">domain</span>
+          <span>Depts</span>
+        </a>
+        <a href="./audit.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">security</span>
+          <span>Audit</span>
+        </a>
+      </nav>
     </div>
+    <script src="../../assets/js/admin/dashboard.js" defer></script>
   </body>
 </html>
