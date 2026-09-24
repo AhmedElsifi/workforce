@@ -1,9 +1,20 @@
 import express from "express";
-import { getEmployees, getEmployeeById, updateEmployee, deactivateEmployee } from "./employees.controller.js";
+import {
+createEmployee,
+getEmployees,
+getEmployeeById,
+updateEmployee,
+deactivateEmployee,
+} from "./employees.controller.js";
+const employeesRoutes = express.Router();
 
-export const employeesRoutes = express().router;
 employeesRoutes.use(express.json());
+employeesRoutes.post("/employees", createEmployee);
 employeesRoutes.get("/employees", getEmployees);
 employeesRoutes.get("/employees/:id", getEmployeeById);
 employeesRoutes.put("/employees/:id", updateEmployee);
-employeesRoutes.patch("/employees/:id/deactivate", deactivateEmployee);
+employeesRoutes.patch(
+"/employees/:id/deactivate",
+deactivateEmployee
+);
+export { employeesRoutes };
