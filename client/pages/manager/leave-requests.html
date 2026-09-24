@@ -25,6 +25,7 @@
           <th>Type</th>
           <th>Duration</th>
           <th>Reason</th>
+          <th>Manager Note</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -53,6 +54,9 @@
             <td>${new Date(item.startDate).toLocaleDateString()} to ${new Date(item.endDate).toLocaleDateString()}</td>
             <td>${item.reason}</td>
             <td>
+              <input type="text" id="note-${item._id}" placeholder="Optional comment" style="padding:4px; font-size:12px;">
+            </td>
+            <td>
               <button class="btn-approve" onclick="updateStatus('${item._id}', 'Approved')">Approve</button>
               <button class="btn-reject" onclick="updateStatus('${item._id}', 'Rejected')">Reject</button>
             </td>
@@ -62,10 +66,12 @@
     }
 
     async function updateStatus(id, status) {
+      const managerComment = document.getElementById(`note-${id}`).value;
+      
       const res = await fetch(`${API_URL}/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status, managerComment })
       });
       const data = await res.json();
       alert(data.message);

@@ -32,3 +32,7 @@ app.use(employeesRoutes);
 app.listen(3000, () => {
   console.log("server is running on port 3000");
 });
+const leaveRoutes = require('./src/modules/leaveRequests/leaveRequests.routes');
+
+// Mount Leave Management Routes
+app.use('/api/leave-requests', leaveRoutes);
