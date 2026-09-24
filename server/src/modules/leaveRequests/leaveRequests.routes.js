@@ -1,7 +1,7 @@
-const express = require('express');
+// convert cjs to express
+import express from "express";
+import * as leaveController from "./leaveRequests.controller.js";
 const router = express.Router();
-const leaveController = require('./leaveRequests.controller');
-
 // Employee routes
 router.post('/', leaveController.createLeaveRequest);
 router.get('/my-requests', leaveController.getMyLeaveRequests);
@@ -10,4 +10,4 @@ router.get('/my-requests', leaveController.getMyLeaveRequests);
 router.get('/pending', leaveController.getPendingLeaveRequests);
 router.patch('/:id/status', leaveController.updateLeaveStatus);
 
-module.exports = router;
+export default router; //edit 

@@ -2,11 +2,13 @@ import express from "express";
 import "dotenv/config";
 import dbConnection from "./db/dbConnection.js";
 import { authRoutes } from "./src/modules/auth/auth.routes.js";
-import cookieParser from "cookie-parser";
+import { departmentsRoutes } from "./src/modules/departments/departments.routes.js";
 import { employeesRoutes } from "./src/modules/employees/employees.routes.js";
+import cookieParser from "cookie-parser";
 import { dashboardRoutes } from "./src/modules/dashboard/dashboard.routes.js";
 import cors from "cors";
 import { seedData } from "./DB seeder.js";
+import leaveRoutes from "./src/modules/leaveRequests/leaveRequests.routes.js";
 
 dbConnection;
 
@@ -28,11 +30,11 @@ app.use(cookieParser());
 app.use(authRoutes);
 app.use(dashboardRoutes);
 app.use(employeesRoutes);
+app.use(departmentsRoutes);
+
+// Leave Management Routes
+app.use("/api/leave-requests", leaveRoutes);
 
 app.listen(3000, () => {
   console.log("server is running on port 3000");
 });
-const leaveRoutes = require('./src/modules/leaveRequests/leaveRequests.routes');
-
-// Mount Leave Management Routes
-app.use('/api/leave-requests', leaveRoutes);
