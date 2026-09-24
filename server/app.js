@@ -5,6 +5,7 @@ import { authRoutes } from "./src/modules/auth/auth.routes.js";
 import cookieParser from "cookie-parser";
 import { employeesRoutes } from "./src/modules/employees/employees.routes.js";
 import { dashboardRoutes } from "./src/modules/dashboard/dashboard.routes.js";
+import { attendanceRoutes } from "./src/modules/attendance/attendance.routes.js";
 import cors from "cors";
 
 dbConnection;
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use(authRoutes);
 app.use(dashboardRoutes);
 app.use(employeesRoutes);
+app.use(attendanceRoutes);
 
 app.listen(3000, () => {
   console.log("server is running on port 3000");
