@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: [
       "http://127.0.0.1:5500",
-      "https://iti-project-workforce.vercel.app/",
+      "https://iti-project-workforce.vercel.app",
     ],
     credentials: true,
   }),
