@@ -71,115 +71,14 @@ let login = async (req, res) => {
 };
 
 let getCurrentUser = async (req, res) => {
-  const token = req.cookies.token;
-
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-  const user = await userModel.findById(decoded._id);
-
-  res.json({
-    fname: user.fname,
-    lname: user.lname,
-    email: user.email,
-    role: user.role,
-    salary: user.salary,
-    employmentStatus: user.employmentStatus,
-  });
-};
-
-let updateCurrentUser = async (req, res) => {
   try {
-    const token = req.cookies.token;
+    // The route is guarded by authenticate, so the identity comes from the
+    // verified token rather than from anything the client sent.
+    const user = await userModel
+      .findById(req.user._id)
+      .select("fname lname email role position salary employmentStatus");
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Not authenticated",
-      });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    const userId = decoded._id;
-    const role = decoded.role;
-
-    const { fname, lname, email, password, department, salary, status } =
-      req.body;
-
-    const updates = {};
-
-    const credentials = {};
-
-    if (fname !== undefined) credentials.fname = fname;
-    if (lname !== undefined) credentials.lname = lname;
-    if (email !== undefined) credentials.email = email;
-    if (password !== undefined) credentials.password = password;
-
-    if (Object.keys(credentials).length > 0) {
-      const errors = validateCreds({
-        fname: credentials.fname ?? "valid",
-        lname: credentials.lname ?? "valid",
-        email: credentials.email ?? "valid@email.com",
-        password: credentials.password ?? "validpassword",
-      });
-
-      if (fname === undefined) delete errors.fname;
-      if (lname === undefined) delete errors.lname;
-      if (email === undefined) delete errors.email;
-      if (password === undefined) delete errors.password;
-
-      if (Object.keys(errors).length > 0) {
-        return res.status(400).json({
-          success: false,
-          errors,
-        });
-      }
-    }
-
-    if (fname !== undefined) {
-      updates.fname = fname.trim();
-    }
-
-    if (lname !== undefined) {
-      updates.lname = lname.trim();
-    }
-
-    if (email !== undefined) {
-      updates.email = email.trim().toLowerCase();
-
-      const existingUser = await userModel.findOne({
-        email: updates.email,
-        _id: { $ne: userId },
-      });
-
-      if (existingUser) {
-        return res.status(409).json({
-          success: false,
-          errors: {
-            email: "Email is already in use",
-          },
-        });
-      }
-    }
-
-    if (password !== undefined) {
-      updates.password = await bcrypt.hash(password, 10);
-    }
-
-    if (role === "admin") {
-      if (department !== undefined) updates.department = department;
-      if (salary !== undefined) updates.salary = salary;
-      if (status !== undefined) updates.status = status;
-    }
-
-    const updatedUser = await userModel
-      .findByIdAndUpdate(userId, updates, {
-        new: true,
-        runValidators: true,
-      })
-      .select("-password");
-
-    if (!updatedUser) {
+    if (!user) {
       return res.status(404).json({
         success: false,
         message: "User not found",
@@ -187,24 +86,96 @@ let updateCurrentUser = async (req, res) => {
     }
 
     return res.status(200).json({
-      success: true,
-      message: "Profile updated successfully",
-      user: updatedUser,
+      fname: user.fname,
+      lname: user.lname,
+      email: user.email,
+      role: user.role,
+      position: user.position ?? null,
+      salary: user.salary,
+      employmentStatus: user.employmentStatus,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Get current user error:", error);
 
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const updateCurrentUser = async (req, res) => {
+  try {
+    const employeeId = req.user._id;
+
+    const allowedFields = [
+      "fname",
+      "lname",
+      "email",
+      "password",
+    ];
+
+    const receivedFields = Object.keys(req.body);
+
+    const invalidField = receivedFields.find(
+      (field) => !allowedFields.includes(field),
+    );
+
+    if (invalidField) {
+      return res.status(400).json({
         success: false,
-        message: "Invalid token",
+        message: `Field '${invalidField}' cannot be updated by employee`,
       });
     }
 
-    if (error.name === "TokenExpiredError") {
-      return res.status(401).json({
+    const updates = {};
+
+    if (req.body.fname !== undefined) {
+      updates.fname = req.body.fname;
+    }
+
+    if (req.body.lname !== undefined) {
+      updates.lname = req.body.lname;
+    }
+
+    if (req.body.email !== undefined) {
+      updates.email = req.body.email;
+    }
+
+    if (req.body.password !== undefined) {
+      updates.password = await bcrypt.hash(req.body.password, 10);
+    }
+
+    const user = await userModel.findByIdAndUpdate(
+      employeeId,
+      updates,
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).select(
+      "fname lname email position department role salary employmentStatus",
+    );
+
+    if (!user) {
+      return res.status(404).json({
         success: false,
-        message: "Token expired",
+        message: "Employee not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+
+    if (error.code === 11000 && error.keyPattern?.email) {
+      return res.status(409).json({
+        success: false,
+        message: "Email is already in use",
       });
     }
 

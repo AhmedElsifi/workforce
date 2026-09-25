@@ -20,7 +20,7 @@
       <header class="mobile-top-bar">
         <div class="brand">WorkForce</div>
         <div class="user-actions">
-          <span>David Chen</span>
+          <span id="employee-username-mobile">Employee</span>
           <span class="material-symbols-outlined">logout</span>
         </div>
       </header>
@@ -83,10 +83,10 @@
 
         <div class="user-profile">
           <div class="user-info">
-            <div class="avatar">DC</div>
+            <div class="avatar" id="employee-avatar"></div>
             <div class="user-text">
-              <h4>David Chen</h4>
-              <p>Field Specialist</p>
+              <h4 id="employee-username">Employee</h4>
+              <p id="employee-position">&mdash;</p>
             </div>
           </div>
           <div class="logout-btn">
@@ -230,10 +230,6 @@
         </a>
       </nav>
     </div>
-    <script
-      src="../../assets/js/employee/profile.js"
-      type="module"
-      defer
-    ></script>
+    <script type="module" src="../../assets/js/employee/profile.js"></script>
   </body>
 </html>

@@ -1,10 +1,24 @@
 import express from "express";
-import { getCurrentUser, login } from "./auth.controller.js";
+import {
+  getCurrentUser,
+  login,
+  updateCurrentUser,
+} from "./auth.controller.js";
+
+import {
+  authenticate,
+  authorize,
+} from "../../middlewares/auth.middleware.js";
 
 export const authRoutes = express().router;
 
 authRoutes.post("/auth/login", login);
 
-authRoutes.get("/auth/me", getCurrentUser);
+authRoutes.get("/auth/me", authenticate, getCurrentUser);
 
-// authRoutes.patch("/auth/me");
+authRoutes.patch(
+  "/auth/me",
+  authenticate,
+  authorize("employee"),
+  updateCurrentUser,
+);
