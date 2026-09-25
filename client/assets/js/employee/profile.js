@@ -1,30 +1,66 @@
-const fname = document.getElementById("fname");
-const lname = document.getElementById("lname");
-const email = document.getElementById("email");
+import { getCurrentEmployee, toTitleCase } from "./global.js";
 
-const position = document.getElementById("view-position");
-const department = document.getElementById("view-department");
-const role = document.getElementById("view-role");
-const salary = document.getElementById("view-salary");
-const statusField = document.getElementById("view-status");
+const EM_DASH = "—";
 
-async function initEmployeeDataFields() {
-  const response = await fetch("http://127.0.0.1:3000/auth/me", {
-    method: "GET",
-    credentials: "include",
-  });
+const editableFields = {
+  fname: document.getElementById("fname"),
+  lname: document.getElementById("lname"),
+  email: document.getElementById("email"),
+};
 
-  const user = await response.json();
+const readOnlyFields = {
+  position: document.getElementById("view-position"),
+  department: document.getElementById("view-department"),
+  role: document.getElementById("view-role"),
+  salary: document.getElementById("view-salary"),
+  employmentStatus: document.getElementById("view-status"),
+};
 
-  fname.value = user.fname;
-  lname.value = user.lname;
-  email.value = user.email;
-
-  position.innerHTML = user.position;
-  department.innerHTML = user.department;
-  role.innerHTML = user.role;
-  salary.innerHTML = `$${user.salary}`;
-  statusField.innerHTML = user.employmentStatus;
+function formatSalary(salary) {
+  return typeof salary === "number"
+    ? `$${salary.toLocaleString("en-US")}`
+    : EM_DASH;
 }
 
-initEmployeeDataFields();
+function displayValue(value) {
+  return toTitleCase(value) || EM_DASH;
+}
+
+function renderReadOnlyFields(employee) {
+  readOnlyFields.position.textContent = displayValue(employee?.position);
+  readOnlyFields.role.textContent = displayValue(employee?.role);
+  readOnlyFields.salary.textContent = formatSalary(employee?.salary);
+  readOnlyFields.employmentStatus.textContent = displayValue(
+    employee?.employmentStatus,
+  );
+
+  // `/auth/me` does not expose the department name (it is stored as a
+  // reference), so the field degrades to a placeholder rather than printing
+  // a raw identifier.
+  readOnlyFields.department.textContent = displayValue(employee?.department);
+}
+
+function renderUnavailable() {
+  for (const field of Object.values(readOnlyFields)) {
+    field.textContent = EM_DASH;
+  }
+}
+
+async function initProfile() {
+  try {
+    const employee = await getCurrentEmployee();
+
+    // Editable inputs keep the stored values verbatim so nothing is
+    // accidentally reformatted on save.
+    editableFields.fname.value = employee?.fname ?? "";
+    editableFields.lname.value = employee?.lname ?? "";
+    editableFields.email.value = employee?.email ?? "";
+
+    renderReadOnlyFields(employee);
+  } catch (error) {
+    console.error("Could not load the employee profile:", error);
+    renderUnavailable();
+  }
+}
+
+initProfile();
