@@ -1,15 +1,12 @@
 import express from "express";
-import {
-  authenticate,
-  authorize,
-} from "../../middlewares/auth.middleware.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 import {
   checkIn,
   checkOut,
   getAttendanceHistory,
 } from "./attendance.controller.js";
 
-export const attendanceRoutes = express.Router();
+const attendanceRoutes = express.Router();
 
 attendanceRoutes.post(
   "/attendance/check-in",
@@ -31,3 +28,5 @@ attendanceRoutes.get(
   authorize("employee"),
   getAttendanceHistory,
 );
+
+export default attendanceRoutes;

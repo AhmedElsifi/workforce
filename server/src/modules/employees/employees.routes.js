@@ -28,4 +28,4 @@ employeesRoutes.patch("/employees/:id/deactivate", checkId, deactivateEmployee);
 // Employee profile from main
 employeesRoutes.get("/employee/profile", employeeProfile);
 
-export { employeesRoutes };
+export default employeesRoutes;

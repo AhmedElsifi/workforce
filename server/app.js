@@ -1,13 +1,14 @@
 import express from "express";
 import "dotenv/config";
 import dbConnection from "./db/dbConnection.js";
-import { authRoutes } from "./src/modules/auth/auth.routes.js";
-import { departmentsRoutes } from "./src/modules/departments/departments.routes.js";
-import { employeesRoutes } from "./src/modules/employees/employees.routes.js";
 import cookieParser from "cookie-parser";
-import { dashboardRoutes } from "./src/modules/dashboard/dashboard.routes.js";
-import { auditRoutes } from "./src/modules/audit/audit.routes.js";
 import cors from "cors";
+import authRoutes from "./src/modules/auth/auth.routes.js";
+import departmentsRoutes from "./src/modules/departments/departments.routes.js";
+import employeesRoutes from "./src/modules/employees/employees.routes.js";
+import dashboardRoutes from "./src/modules/dashboard/dashboard.routes.js";
+import auditRoutes from "./src/modules/audit/audit.routes.js";
+import attendanceRoutes from "./src/modules/attendance/attendance.routes.js";
 import leaveRoutes from "./src/modules/leaveRequests/leaveRequests.routes.js";
 
 dbConnection;
@@ -30,6 +31,7 @@ app.use(auditRoutes);
 app.use(employeesRoutes);
 app.use(departmentsRoutes);
 app.use(leaveRoutes);
+app.use(attendanceRoutes);
 
 // Leave Management Routes
 

@@ -2,9 +2,13 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
-import { adminDashboard, managerDashboard, employeeDashboard  } from "./dashboard.controller.js";
+import {
+  adminDashboard,
+  managerDashboard,
+  employeeDashboard,
+} from "./dashboard.controller.js";
 
-export const dashboardRoutes = express().router;
+const dashboardRoutes = express().router;
 
 dashboardRoutes.get(
   "/employee/dashboard",
@@ -12,9 +16,6 @@ dashboardRoutes.get(
   authorize("employee"),
   employeeDashboard,
 );
-
-
-
 
 dashboardRoutes.get(
   "/admin/dashboard",
@@ -50,10 +51,9 @@ dashboardRoutes.get(
   authorize("admin"),
   (req, res) => {
     res.sendFile(
-      path.resolve(
-        __dirname,
-        "../../../../client/pages/admin/dashboard.html",
-      ),
+      path.resolve(__dirname, "../../../../client/pages/admin/dashboard.html"),
     );
   },
 );
+
+export default dashboardRoutes;
