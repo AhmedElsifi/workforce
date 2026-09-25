@@ -1,20 +1,21 @@
 import express from "express";
 import checkId from "../../middlewares/checkId.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 
 import {
-  employeeProfile,
   createEmployee,
   getEmployees,
   getEmployeeById,
   updateEmployee,
   deactivateEmployee,
+  getEmployeesByActiveDepartment,
+  updateEmployeeStatus,
 } from "./employees.controller.js";
 
 const employeesRoutes = express.Router();
 
 employeesRoutes.use(express.json());
 
-// Employee Management
 employeesRoutes.post("/employees", createEmployee);
 
 employeesRoutes.get("/employees", getEmployees);
@@ -25,7 +26,19 @@ employeesRoutes.put("/employees/:id", checkId, updateEmployee);
 
 employeesRoutes.patch("/employees/:id/deactivate", checkId, deactivateEmployee);
 
-// Employee profile from main
-employeesRoutes.get("/employee/profile", employeeProfile);
+employeesRoutes.get(
+  "/employees/department/my-team",
+  authenticate,
+  authorize("manager"),
+  getEmployeesByActiveDepartment,
+);
+
+employeesRoutes.patch(
+  "/employees/:id/status",
+  authenticate,
+  authorize("manager"),
+  checkId,
+  updateEmployeeStatus,
+);
 
 export default employeesRoutes;

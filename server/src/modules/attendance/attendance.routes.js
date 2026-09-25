@@ -4,6 +4,7 @@ import {
   checkIn,
   checkOut,
   getAttendanceHistory,
+  getDepartmentAttendance,
 } from "./attendance.controller.js";
 
 const attendanceRoutes = express.Router();
@@ -27,6 +28,13 @@ attendanceRoutes.get(
   authenticate,
   authorize("employee"),
   getAttendanceHistory,
+);
+
+attendanceRoutes.get(
+  "/attendance/department",
+  authenticate,
+  authorize("manager"),
+  getDepartmentAttendance,
 );
 
 export default attendanceRoutes;

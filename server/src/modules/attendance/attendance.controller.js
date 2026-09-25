@@ -1,4 +1,6 @@
 import attendanceModel from "../../../db/models/attendance.model.js";
+import userModel from "../../../db/models/user.model.js";
+import departmentModel from "../../../db/models/department.model.js";
 
 const checkIn = async (req, res) => {
   try {
@@ -50,7 +52,6 @@ const checkIn = async (req, res) => {
     });
   }
 };
-
 
 const checkOut = async (req, res) => {
   try {
@@ -145,5 +146,71 @@ const getAttendanceHistory = async (req, res) => {
   }
 };
 
+const getDepartmentAttendance = async (req, res) => {
+  try {
+    const managerId = req.user?._id || req.user?.id;
+    const { date } = req.query;
 
-export { checkIn, checkOut, getAttendanceHistory };
+    const department = await departmentModel
+      .findOne({ manager: managerId })
+      .lean();
+
+    if (!department) {
+      return res.status(404).json({
+        success: false,
+        message: "No department is assigned to this manager yet",
+      });
+    }
+
+    const employeeIds = await userModel
+      .find({ department: department._id, role: "employee" })
+      .distinct("_id");
+
+    const query = { employee: { $in: employeeIds } };
+
+    if (date) {
+      query.workDate = date;
+    }
+
+    const records = await attendanceModel
+      .find(query)
+      .populate("employee", "fname lname position")
+      .sort({ workDate: -1, checkIn: -1 })
+      .lean();
+
+    const formatted = records.map((record) => {
+      let status = "present";
+
+      if (!record.checkIn) {
+        status = "absent";
+      } else if (record.checkOut && record.checkIn) {
+        const hours =
+          (new Date(record.checkOut) - new Date(record.checkIn)) /
+          (1000 * 60 * 60);
+        if (hours < 8) status = "late";
+      }
+
+      return {
+        _id: record._id,
+        date: record.workDate,
+        clockIn: record.checkIn,
+        clockOut: record.checkOut,
+        status,
+        employee: record.employee,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      records: formatted,
+    });
+  } catch (error) {
+    console.error("Get department attendance error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+export { checkIn, checkOut, getAttendanceHistory, getDepartmentAttendance };

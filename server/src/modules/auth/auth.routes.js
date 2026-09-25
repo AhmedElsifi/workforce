@@ -17,7 +17,7 @@ authRoutes.get("/auth/me", authenticate, getCurrentUser);
 authRoutes.patch(
   "/auth/me",
   authenticate,
-  authorize("employee"),
+  authorize("employee", "manager"),
   updateCurrentUser,
 );
 

@@ -37,12 +37,10 @@ const createLeaveRequest = async (req, res) => {
     });
 
     if (existingLeave) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "You already have a pending or approved leave request for these dates",
-        });
+      return res.status(400).json({
+        message:
+          "You already have a pending or approved leave request for these dates",
+      });
     }
 
     const newLeave = new leaveRequestModel({
@@ -54,12 +52,10 @@ const createLeaveRequest = async (req, res) => {
     });
 
     await newLeave.save();
-    return res
-      .status(201)
-      .json({
-        message: "Leave request submitted successfully",
-        leave: newLeave,
-      });
+    return res.status(201).json({
+      message: "Leave request submitted successfully",
+      leave: newLeave,
+    });
   } catch (error) {
     return res
       .status(500)
@@ -110,9 +106,34 @@ const updateLeaveStatus = async (req, res) => {
     .json({ message: `Leave request ${status.toLowerCase()}`, leave: request });
 };
 
+const getAllLeaveRequests = async (req, res) => {
+  try {
+    const manager = await userModel
+      .findById(req.user?._id || req.user?.id)
+      .lean();
+
+    const employeeIds = manager?.department
+      ? await userModel.find({ department: manager.department }).distinct("_id")
+      : [];
+
+    const requests = await leaveRequestModel
+      .find({ employeeId: { $in: employeeIds } })
+      .populate("employeeId", "fname lname email")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json(requests);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
+
 export {
   createLeaveRequest,
   getMyLeaveRequests,
   getPendingLeaveRequests,
+  getAllLeaveRequests,
   updateLeaveStatus,
 };

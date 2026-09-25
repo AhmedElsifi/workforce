@@ -72,7 +72,11 @@ let getCurrentUser = async (req, res) => {
   try {
     const user = await userModel
       .findById(req.user._id)
-      .select("fname lname email role position salary employmentStatus");
+      .select(
+        "fname lname email role position salary employmentStatus department",
+      )
+      .populate("department", "name")
+      .lean();
 
     if (!user) {
       return res.status(404).json({
@@ -89,6 +93,7 @@ let getCurrentUser = async (req, res) => {
       position: user.position ?? null,
       salary: user.salary,
       employmentStatus: user.employmentStatus,
+      department: user.department?.name ?? null,
     });
   } catch (error) {
     console.error("Get current user error:", error);
