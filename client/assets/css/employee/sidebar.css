@@ -248,12 +248,6 @@
   display: none !important;
 }
 
-/* ==========================================================================
-   Portal shell — layout and primitives shared by every Employee Portal page.
-   Class names are namespaced (page-*, state-*, btn--*) so they never collide
-   with the page-specific styles in profile.css / dashboard.css / attendance.css.
-   ========================================================================== */
-
 .main-content {
   position: relative;
   flex: 1;

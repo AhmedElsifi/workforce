@@ -19,7 +19,9 @@ const createLeaveRequest = async (req, res) => {
 
     // End date must be after start date
     if (new Date(startDate) > new Date(endDate)) {
-      return res.status(400).json({ message: "End date must be after start date" });
+      return res
+        .status(400)
+        .json({ message: "End date must be after start date" });
     }
 
     // 2. Validation: Check for overlapping leave requests
@@ -27,12 +29,20 @@ const createLeaveRequest = async (req, res) => {
       employeeId,
       status: { $in: ["Pending", "Approved"] },
       $or: [
-        { startDate: { $lte: new Date(endDate) }, endDate: { $gte: new Date(startDate) } },
+        {
+          startDate: { $lte: new Date(endDate) },
+          endDate: { $gte: new Date(startDate) },
+        },
       ],
     });
 
     if (existingLeave) {
-      return res.status(400).json({ message: "You already have a pending or approved leave request for these dates" });
+      return res
+        .status(400)
+        .json({
+          message:
+            "You already have a pending or approved leave request for these dates",
+        });
     }
 
     const newLeave = new leaveRequestModel({
@@ -44,20 +54,32 @@ const createLeaveRequest = async (req, res) => {
     });
 
     await newLeave.save();
-    return res.status(201).json({ message: "Leave request submitted successfully", leave: newLeave });
+    return res
+      .status(201)
+      .json({
+        message: "Leave request submitted successfully",
+        leave: newLeave,
+      });
   } catch (error) {
-    return res.status(500).json({ message: "Server error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
 
 const getMyLeaveRequests = async (req, res) => {
   const employeeId = req.user?._id || req.user?.id;
-  const requests = await leaveRequestModel.find({ employeeId }).sort({ createdAt: -1 }).lean();
+  const requests = await leaveRequestModel
+    .find({ employeeId })
+    .sort({ createdAt: -1 })
+    .lean();
   return res.status(200).json(requests);
 };
 
 const getPendingLeaveRequests = async (req, res) => {
-  const manager = await userModel.findById(req.user?._id || req.user?.id).lean();
+  const manager = await userModel
+    .findById(req.user?._id || req.user?.id)
+    .lean();
   const employeeIds = manager?.department
     ? await userModel.find({ department: manager.department }).distinct("_id")
     : [];
@@ -72,15 +94,25 @@ const getPendingLeaveRequests = async (req, res) => {
 const updateLeaveStatus = async (req, res) => {
   const { status, managerComment = "" } = req.body;
   if (!["Approved", "Rejected"].includes(status)) {
-    return res.status(400).json({ message: "Status must be Approved or Rejected" });
+    return res
+      .status(400)
+      .json({ message: "Status must be Approved or Rejected" });
   }
   const request = await leaveRequestModel.findByIdAndUpdate(
     req.params.id,
     { status, managerComment },
     { new: true, runValidators: true },
   );
-  if (!request) return res.status(404).json({ message: "Leave request not found" });
-  return res.status(200).json({ message: `Leave request ${status.toLowerCase()}`, leave: request });
+  if (!request)
+    return res.status(404).json({ message: "Leave request not found" });
+  return res
+    .status(200)
+    .json({ message: `Leave request ${status.toLowerCase()}`, leave: request });
 };
 
-export { createLeaveRequest, getMyLeaveRequests, getPendingLeaveRequests, updateLeaveStatus };
+export {
+  createLeaveRequest,
+  getMyLeaveRequests,
+  getPendingLeaveRequests,
+  updateLeaveStatus,
+};

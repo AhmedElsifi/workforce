@@ -29,13 +29,10 @@ app.use(dashboardRoutes);
 app.use(auditRoutes);
 app.use(employeesRoutes);
 app.use(departmentsRoutes);
+app.use(leaveRoutes);
 
 // Leave Management Routes
-app.use("/api/leave-requests", leaveRoutes);
 
 app.listen(3000, () => {
   console.log("server is running on port 3000");
 });
-
-// Mount Leave Management Routes
-app.use("/api/leave-requests", leaveRoutes);
