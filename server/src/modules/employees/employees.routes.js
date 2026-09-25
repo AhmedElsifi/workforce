@@ -19,28 +19,13 @@ employeesRoutes.post("/employees", createEmployee);
 
 employeesRoutes.get("/employees", getEmployees);
 
-employeesRoutes.get(
-  "/employees/:id",
-  checkId,
-  getEmployeeById,
-);
+employeesRoutes.get("/employees/:id", checkId, getEmployeeById);
 
-employeesRoutes.put(
-  "/employees/:id",
-  checkId,
-  updateEmployee,
-);
+employeesRoutes.put("/employees/:id", checkId, updateEmployee);
 
-employeesRoutes.patch(
-  "/employees/:id/deactivate",
-  checkId,
-  deactivateEmployee,
-);
+employeesRoutes.patch("/employees/:id/deactivate", checkId, deactivateEmployee);
 
 // Employee profile from main
-employeesRoutes.get(
-  "/employee/profile",
-  employeeProfile,
-);
+employeesRoutes.get("/employee/profile", employeeProfile);
 
 export { employeesRoutes };
