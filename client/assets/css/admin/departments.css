@@ -1,0 +1,12 @@
+.headcount-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: #eef2ff;
+  color: #6366f1;
+  font-weight: 600;
+  font-size: 12px;
+}

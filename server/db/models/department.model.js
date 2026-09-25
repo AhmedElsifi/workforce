@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const departmentSchema = new mongoose.Schema({
   name: String,
   description: String,
@@ -10,7 +9,5 @@ const departmentSchema = new mongoose.Schema({
   createdAt: Date,
   updatedAt: Date,
 });
-
-const departmentModel = mongoose.model("departmentSchema", departmentSchema);
-
+const departmentModel = mongoose.model("Department", departmentSchema);
 export default departmentModel;
