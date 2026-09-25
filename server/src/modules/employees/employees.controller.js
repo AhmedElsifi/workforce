@@ -2,10 +2,6 @@ import bcrypt from "bcrypt";
 import userModel from "../../../db/models/user.model.js";
 import { validateRegister } from "../auth/auth.validation.js";
 
-const employeeProfile = (req, res) => {
-  res.json({ message: "Success Admin" });
-};
-
 const createEmployee = async (req, res) => {
   const userData = req.body;
 
@@ -105,13 +101,7 @@ const getEmployeeById = async (req, res) => {
 };
 
 const updateEmployee = async (req, res) => {
-  const {
-    position,
-    role,
-    salary,
-    department,
-    employmentStatus,
-  } = req.body;
+  const { position, role, salary, department, employmentStatus } = req.body;
 
   const employee = await userModel
     .findByIdAndUpdate(
@@ -172,11 +162,128 @@ const deactivateEmployee = async (req, res) => {
   });
 };
 
+const getEmployeesByActiveDepartment = async (req, res) => {
+  try {
+    const managerId = req.user?._id || req.user?.id;
+
+    const manager = await userModel.findById(managerId).lean();
+
+    if (!manager) {
+      return res.status(404).json({
+        success: false,
+        message: "Manager not found",
+      });
+    }
+
+    if (!manager.department) {
+      return res.status(200).json({
+        success: true,
+        employees: [],
+      });
+    }
+
+    const employees = await userModel
+      .find({
+        department: manager.department,
+        role: "employee",
+        _id: { $ne: managerId },
+      })
+      .select("fname lname email role position salary employmentStatus")
+      .sort({ fname: 1 })
+      .lean();
+
+    return res.status(200).json({
+      success: true,
+      employees,
+    });
+  } catch (error) {
+    console.error("Get employees by department error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const updateEmployeeStatus = async (req, res) => {
+  try {
+    const { employmentStatus } = req.body;
+
+    if (!["active", "inactive"].includes(employmentStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: "employmentStatus must be 'active' or 'inactive'",
+      });
+    }
+
+    const managerId = req.user?._id || req.user?.id;
+    const manager = await userModel.findById(managerId).lean();
+
+    if (!manager) {
+      return res.status(404).json({
+        success: false,
+        message: "Manager not found",
+      });
+    }
+
+    const employee = await userModel.findById(req.params.id);
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee not found",
+      });
+    }
+
+    if (
+      !manager.department ||
+      employee.department?.toString() !== manager.department.toString()
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only manage employees in your own department",
+      });
+    }
+
+    if (employee.role !== "employee") {
+      return res.status(403).json({
+        success: false,
+        message: "You can only manage employees with the 'employee' role",
+      });
+    }
+
+    employee.employmentStatus = employmentStatus;
+    await employee.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `Employee ${employmentStatus === "active" ? "activated" : "deactivated"} successfully`,
+      employee: {
+        _id: employee._id,
+        fname: employee.fname,
+        lname: employee.lname,
+        email: employee.email,
+        role: employee.role,
+        position: employee.position,
+        salary: employee.salary,
+        employmentStatus: employee.employmentStatus,
+      },
+    });
+  } catch (error) {
+    console.error("Update employee status error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 export {
-  employeeProfile,
   createEmployee,
   getEmployees,
   getEmployeeById,
   updateEmployee,
   deactivateEmployee,
+  getEmployeesByActiveDepartment,
+  updateEmployeeStatus,
 };

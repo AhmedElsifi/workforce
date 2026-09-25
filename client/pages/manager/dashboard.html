@@ -16,10 +16,14 @@
   <body class="dashboard-page">
     <div class="app-container">
       <header class="mobile-top-bar">
-        <div class="brand">WorkForce</div>
         <div class="user-actions">
           <span id="manager-username-mobile"></span>
-          <span class="material-symbols-outlined">logout</span>
+          <span
+            class="material-symbols-outlined"
+            id="mobile-logout-btn"
+            style="cursor: pointer"
+            >logout</span
+          >
         </div>
       </header>
 
@@ -40,6 +44,9 @@
             <li>
               <a href="./dashboard.html" class="nav-item active">
                 <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon"
+                    >dashboard</span
+                  >
                   <span class="nav-text">Dashboard</span>
                 </div>
               </a>
@@ -47,6 +54,7 @@
             <li>
               <a href="./employees.html" class="nav-item">
                 <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">group</span>
                   <span class="nav-text">Employees</span>
                 </div>
               </a>
@@ -54,6 +62,9 @@
             <li>
               <a href="./leave-requests.html" class="nav-item">
                 <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon"
+                    >fact_check</span
+                  >
                   <span class="nav-text">Leave Requests</span>
                 </div>
               </a>
@@ -61,7 +72,18 @@
             <li>
               <a href="./attendance.html" class="nav-item">
                 <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon"
+                    >schedule</span
+                  >
                   <span class="nav-text">Attendance</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./profile.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">person</span>
+                  <span class="nav-text">My Profile</span>
                 </div>
               </a>
             </li>
@@ -76,7 +98,11 @@
               <p id="manager-department">Department</p>
             </div>
           </div>
-          <div class="logout-btn">
+          <div
+            class="logout-btn"
+            id="desktop-logout-btn"
+            style="cursor: pointer"
+          >
             <span class="material-symbols-outlined">logout</span>
           </div>
         </div>
@@ -183,11 +209,15 @@
         </a>
         <a href="./leave-requests.html" class="mobile-nav-item">
           <span class="material-symbols-outlined">fact_check</span>
-          <span>Leave Requests</span>
+          <span>Leave</span>
         </a>
         <a href="./attendance.html" class="mobile-nav-item">
           <span class="material-symbols-outlined">schedule</span>
           <span>Attendance</span>
+        </a>
+        <a href="./profile.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">person</span>
+          <span>Profile</span>
         </a>
       </nav>
     </div>

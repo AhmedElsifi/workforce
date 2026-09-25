@@ -73,20 +73,57 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+}
+
+.search-bar:focus-within {
+  border-color: #6366f1;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.search-bar .material-symbols-outlined {
+  color: #94a3b8;
+  font-size: 20px;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #1e293b;
+  font-family: inherit;
+}
+
+.search-bar input::placeholder {
+  color: #94a3b8;
+}
+
 .table-container {
   overflow-x: auto;
   width: 100%;
   border-radius: 8px;
 }
 
-.requests-table {
+.employees-table {
   width: 100%;
-  min-width: 1000px;
+  min-width: 900px;
   border-collapse: collapse;
   text-align: left;
 }
 
-.requests-table th {
+.employees-table th {
   padding: 14px 16px;
   font-size: 12px;
   font-weight: 600;
@@ -98,7 +135,7 @@
   white-space: nowrap;
 }
 
-.requests-table td {
+.employees-table td {
   padding: 16px;
   font-size: 14px;
   color: #1e293b;
@@ -106,11 +143,11 @@
   vertical-align: middle;
 }
 
-.requests-table tbody tr:last-child td {
+.employees-table tbody tr:last-child td {
   border-bottom: none;
 }
 
-.requests-table tbody tr:hover {
+.employees-table tbody tr:hover {
   background-color: #f8fafc;
 }
 
@@ -134,115 +171,89 @@
   flex-shrink: 0;
 }
 
-.leave-type-badge,
+.employee-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.employee-name .name {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.employee-name .role {
+  font-size: 12px;
+  color: #94a3b8;
+  text-transform: capitalize;
+}
+
+.email-text {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.salary-text {
+  font-weight: 600;
+  color: #1e293b;
+}
+
 .status-badge {
   display: inline-block;
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
+  text-transform: capitalize;
   white-space: nowrap;
 }
 
-.leave-type-badge.annual {
+.status-badge.active {
   background-color: #dcfce7;
   color: #166534;
 }
-.leave-type-badge.sick {
-  background-color: #fee2e2;
-  color: #991b1b;
-}
-.leave-type-badge.personal {
-  background-color: #e0e7ff;
-  color: #4338ca;
-}
-.leave-type-badge.compensatory {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-.leave-type-badge.unpaid {
+
+.status-badge.inactive {
   background-color: #f1f5f9;
-  color: #475569;
-}
-
-.status-badge.pending {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-.status-badge.approved {
-  background-color: #dcfce7;
-  color: #166534;
-}
-.status-badge.rejected {
-  background-color: #fee2e2;
-  color: #991b1b;
-}
-
-.note-input {
-  width: 100%;
-  min-width: 140px;
-  padding: 8px 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 13px;
-  color: #1e293b;
-  background-color: #f8fafc;
-  font-family: inherit;
-  transition: all 0.2s ease;
-}
-
-.note-input:focus {
-  outline: none;
-  border-color: #6366f1;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.note-text {
-  font-size: 13px;
   color: #64748b;
-  font-style: italic;
 }
 
-.text-muted {
-  font-size: 13px;
-  color: #94a3b8;
-  font-weight: 500;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-approve,
-.btn-reject {
+.btn-toggle {
   padding: 6px 16px;
-  border: none;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  background-color: #ffffff;
+  color: #1e293b;
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
-.btn-approve {
+.btn-toggle:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+}
+
+.btn-toggle.activate {
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.btn-toggle.activate:hover {
   background-color: #10b981;
   color: #ffffff;
 }
 
-.btn-approve:hover {
-  background-color: #059669;
+.btn-toggle.deactivate {
+  border-color: #ef4444;
+  color: #ef4444;
 }
 
-.btn-reject {
+.btn-toggle.deactivate:hover {
   background-color: #ef4444;
   color: #ffffff;
-}
-
-.btn-reject:hover {
-  background-color: #dc2626;
 }
 
 .empty-state {

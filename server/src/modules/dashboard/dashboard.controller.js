@@ -86,7 +86,9 @@ const adminDashboard = async (req, res) => {
 const managerDashboard = async (req, res) => {
   try {
     const managerId = req.user._id;
-    const department = await departmentModel.findOne({ manager: managerId }).lean();
+    const department = await departmentModel
+      .findOne({ manager: managerId })
+      .lean();
 
     if (!department) {
       return res.status(404).json({
@@ -97,19 +99,24 @@ const managerDashboard = async (req, res) => {
 
     const [totalEmployees, activeEmployees, inactiveEmployees] =
       await Promise.all([
-        userModel.countDocuments({ department: department._id }),
         userModel.countDocuments({
           department: department._id,
+          role: "employee",
+        }),
+        userModel.countDocuments({
+          department: department._id,
+          role: "employee",
           employmentStatus: "active",
         }),
         userModel.countDocuments({
           department: department._id,
+          role: "employee",
           employmentStatus: "inactive",
         }),
       ]);
 
     const departmentEmployeeIds = await userModel
-      .find({ department: department._id })
+      .find({ department: department._id, role: "employee" })
       .distinct("_id");
 
     const todayStart = startOfToday();
