@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WorkForce | Manager Dashboard</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/manager/sidebar.css" />
+    <link rel="stylesheet" href="../../assets/css/manager/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+  </head>
+  <body class="dashboard-page">
+    <div class="app-container">
+      <header class="mobile-top-bar">
+        <div class="brand">WorkForce</div>
+        <div class="user-actions">
+          <span id="manager-username-mobile"></span>
+          <span class="material-symbols-outlined">logout</span>
+        </div>
+      </header>
+
+      <aside class="sidebar">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <span class="material-symbols-outlined">corporate_fare</span>
+          </div>
+          <div class="logo-text">
+            <h1>WorkForce</h1>
+            <span>Manager Portal</span>
+          </div>
+        </div>
+
+        <nav class="nav-menu">
+          <div class="nav-label">Operations & Oversight</div>
+          <ul>
+            <li>
+              <a href="./dashboard.html" class="nav-item active">
+                <div class="nav-left">
+                  <span class="nav-text">Dashboard</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./employees.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="nav-text">Employees</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./leave-requests.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="nav-text">Leave Requests</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./attendance.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="nav-text">Attendance</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="user-profile">
+          <div class="user-info">
+            <div class="avatar" id="manager-avatar">--</div>
+            <div class="user-text">
+              <h4 id="manager-username">Loading...</h4>
+              <p id="manager-department">Department</p>
+            </div>
+          </div>
+          <div class="logout-btn">
+            <span class="material-symbols-outlined">logout</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <div class="dashboard">
+          <div class="dashboard-header">
+            <h2>Manager Dashboard</h2>
+            <p id="manager-dept-subtitle">Overview of your department</p>
+          </div>
+
+          <section class="kpi-grid" id="kpi-grid">
+            <article class="kpi-card">
+              <div class="kpi-icon kpi-icon-blue">
+                <span class="material-symbols-outlined">groups</span>
+              </div>
+              <div class="kpi-body">
+                <p class="kpi-label">Department Staff</p>
+                <h3 class="kpi-value" id="kpi-total">--</h3>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-icon kpi-icon-green">
+                <span class="material-symbols-outlined">check_circle</span>
+              </div>
+              <div class="kpi-body">
+                <p class="kpi-label">Active</p>
+                <h3 class="kpi-value" id="kpi-active">--</h3>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-icon kpi-icon-red">
+                <span class="material-symbols-outlined">cancel</span>
+              </div>
+              <div class="kpi-body">
+                <p class="kpi-label">Inactive</p>
+                <h3 class="kpi-value" id="kpi-inactive">--</h3>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-icon kpi-icon-amber">
+                <span class="material-symbols-outlined">pending_actions</span>
+              </div>
+              <div class="kpi-body">
+                <p class="kpi-label">Pending Leave Requests</p>
+                <h3 class="kpi-value" id="kpi-pending-leave">--</h3>
+              </div>
+            </article>
+          </section>
+
+          <section class="panel">
+            <h3 class="panel-title">Today's Attendance Overview</h3>
+            <div class="attendance-overview">
+              <div class="attendance-rate-ring">
+                <div class="ring" id="attendance-ring">
+                  <span id="attendance-rate-text">0%</span>
+                </div>
+                <p>Clock-in Rate</p>
+              </div>
+              <div class="attendance-stats">
+                <div class="attendance-stat">
+                  <span class="dot dot-present"></span>
+                  <span>Present</span>
+                  <strong id="attendance-present">0</strong>
+                </div>
+                <div class="attendance-stat">
+                  <span class="dot dot-absent"></span>
+                  <span>Absent</span>
+                  <strong id="attendance-absent">0</strong>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel quick-links-panel">
+            <h3 class="panel-title">Quick Actions</h3>
+            <div class="quick-links">
+              <a href="./leave-requests.html" class="quick-link">
+                <span class="material-symbols-outlined">fact_check</span>
+                Review Leave Requests
+              </a>
+              <a href="./employees.html" class="quick-link">
+                <span class="material-symbols-outlined">group</span>
+                View Department Roster
+              </a>
+              <a href="./attendance.html" class="quick-link">
+                <span class="material-symbols-outlined">schedule</span>
+                View Attendance Logs
+              </a>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <nav class="mobile-bottom-nav">
+        <a href="./dashboard.html" class="mobile-nav-item active">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="./employees.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">group</span>
+          <span>Employees</span>
+        </a>
+        <a href="./leave-requests.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">fact_check</span>
+          <span>Leave Requests</span>
+        </a>
+        <a href="./attendance.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>Attendance</span>
+        </a>
+      </nav>
+    </div>
+    <script src="../../assets/js/manager/dashboard.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,119 @@
+const API_BASE = "http://127.0.0.1:3000";
+
+const usernameField = document.getElementById("admin-username");
+const usernameMobileField = document.getElementById("admin-username-mobile");
+const avatarField = document.getElementById("admin-avatar");
+
+const categoryFilter = document.getElementById("category-filter");
+const refreshBtn = document.getElementById("refresh-btn");
+const tableBody = document.getElementById("audit-table-body");
+const pagination = document.getElementById("audit-pagination");
+
+let currentPage = 1;
+
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
+async function loadCurrentAdmin() {
+  const response = await fetch(`${API_BASE}/auth/me`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) return;
+
+  const user = await response.json();
+  const fullName = `${user.fname ?? ""} ${user.lname ?? ""}`.trim();
+
+  usernameField.textContent = fullName || "Admin";
+  usernameMobileField.textContent = fullName || "Admin";
+  avatarField.textContent = (user.fname?.[0] ?? "A") + (user.lname?.[0] ?? "");
+}
+
+function renderRows(logs) {
+  if (!logs.length) {
+    tableBody.innerHTML =
+      '<tr><td colspan="4" class="empty-state">No audit entries found.</td></tr>';
+    return;
+  }
+
+  tableBody.innerHTML = logs
+    .map((log) => {
+      const performer = log.performedBy
+        ? `${log.performedBy.fname ?? ""} ${log.performedBy.lname ?? ""}`.trim()
+        : "System";
+
+      return `
+        <tr>
+          <td>${log.description}</td>
+          <td><span class="audit-category-tag">${log.category}</span></td>
+          <td>${performer || "System"}</td>
+          <td>${formatDate(log.createdAt)}</td>
+        </tr>`;
+    })
+    .join("");
+}
+
+function renderPagination(paginationData) {
+  const { page, pages } = paginationData;
+
+  pagination.innerHTML = `
+    <button id="prev-page" ${page <= 1 ? "disabled" : ""}>Previous</button>
+    <span>Page ${page} of ${pages}</span>
+    <button id="next-page" ${page >= pages ? "disabled" : ""}>Next</button>
+  `;
+
+  document.getElementById("prev-page").addEventListener("click", () => {
+    currentPage = Math.max(currentPage - 1, 1);
+    loadAuditLog();
+  });
+
+  document.getElementById("next-page").addEventListener("click", () => {
+    currentPage += 1;
+    loadAuditLog();
+  });
+}
+
+async function loadAuditLog() {
+  tableBody.innerHTML =
+    '<tr><td colspan="4" class="empty-state">Loading audit log...</td></tr>';
+
+  try {
+    const params = new URLSearchParams({ page: currentPage, limit: 20 });
+    if (categoryFilter.value) params.set("category", categoryFilter.value);
+
+    const response = await fetch(`${API_BASE}/audit?${params.toString()}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      tableBody.innerHTML =
+        '<tr><td colspan="4" class="empty-state">Could not load audit log.</td></tr>';
+      return;
+    }
+
+    renderRows(data.logs);
+    renderPagination(data.pagination);
+  } catch (error) {
+    console.error("Failed to load audit log:", error);
+    tableBody.innerHTML =
+      '<tr><td colspan="4" class="empty-state">Could not load audit log.</td></tr>';
+  }
+}
+
+categoryFilter.addEventListener("change", () => {
+  currentPage = 1;
+  loadAuditLog();
+});
+
+refreshBtn.addEventListener("click", () => loadAuditLog());
+
+loadCurrentAdmin();
+loadAuditLog();

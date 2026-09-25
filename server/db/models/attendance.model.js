@@ -28,6 +28,9 @@ const attendanceSchema = new mongoose.Schema(
   },
 );
 
+const attendanceModel = mongoose.model("Attendance", attendanceSchema);
+
+export default attendanceModel;
 attendanceSchema.index(
   { employee: 1, workDate: 1 },
   { unique: true },

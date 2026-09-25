@@ -1,13 +1,17 @@
-// convert cjs to express
 import express from "express";
-import * as leaveController from "./leaveRequests.controller.js";
-const router = express.Router();
-// Employee routes
-router.post('/', leaveController.createLeaveRequest);
-router.get('/my-requests', leaveController.getMyLeaveRequests);
+import {
+	createLeaveRequest,
+	getMyLeaveRequests,
+	getPendingLeaveRequests,
+	updateLeaveStatus,
+} from "./leaveRequests.controller.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 
-// Manager routes
-router.get('/pending', leaveController.getPendingLeaveRequests);
-router.patch('/:id/status', leaveController.updateLeaveStatus);
+const leaveRoutes = express.Router();
 
-export default router; //edit 
+leaveRoutes.post("/", authenticate, authorize("employee"), createLeaveRequest);
+leaveRoutes.get("/my-requests", authenticate, authorize("employee"), getMyLeaveRequests);
+leaveRoutes.get("/pending", authenticate, authorize("manager"), getPendingLeaveRequests);
+leaveRoutes.patch("/:id/status", authenticate, authorize("manager"), updateLeaveStatus);
+
+export default leaveRoutes;
