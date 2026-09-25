@@ -1,21 +1,46 @@
 import express from "express";
-import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
-import { employeeProfile } from "./employees.controller.js";
+import checkId from "../../middlewares/checkId.js";
 
-export const employeesRoutes = express().router;
+import {
+  employeeProfile,
+  createEmployee,
+  getEmployees,
+  getEmployeeById,
+  updateEmployee,
+  deactivateEmployee,
+} from "./employees.controller.js";
+
+const employeesRoutes = express.Router();
+
+employeesRoutes.use(express.json());
+
+// Employee Management
+employeesRoutes.post("/employees", createEmployee);
+
+employeesRoutes.get("/employees", getEmployees);
 
 employeesRoutes.get(
+  "/employees/:id",
+  checkId,
+  getEmployeeById,
+);
+
+employeesRoutes.put(
+  "/employees/:id",
+  checkId,
+  updateEmployee,
+);
+
+employeesRoutes.patch(
+  "/employees/:id/deactivate",
+  checkId,
+  deactivateEmployee,
+);
+
+// Employee profile from main
+employeesRoutes.get(
   "/employee/profile",
-  //   authenticate,
-  //   authorize("admin"),
   employeeProfile,
 );
 
-employeesRoutes.get(
-  "/pages/employee/profile.html",
-  //   authenticate,
-  //   authorize("employee"),
-  (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/pages/employee/profile.html"));
-  },
-);
+export { employeesRoutes };

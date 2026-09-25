@@ -2,16 +2,19 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
-import {
-  adminDashboard,
-  managerDashboard,
-  employeeDashboard,
-} from "./dashboard.controller.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { adminDashboard, managerDashboard, employeeDashboard  } from "./dashboard.controller.js";
 
 export const dashboardRoutes = express().router;
+
+dashboardRoutes.get(
+  "/employee/dashboard",
+  authenticate,
+  authorize("employee"),
+  employeeDashboard,
+);
+
+
+
 
 dashboardRoutes.get(
   "/admin/dashboard",

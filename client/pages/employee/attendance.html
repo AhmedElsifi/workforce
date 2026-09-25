@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WorkForce Portal - My Attendance</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/employee/sidebar.css" />
+    <link rel="stylesheet" href="../../assets/css/employee/attendance.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Mobile Top Bar -->
+      <header class="mobile-top-bar">
+        <div class="brand">WorkForce</div>
+        <div class="user-actions">
+          <span id="employee-username-mobile">Employee</span>
+          <span class="material-symbols-outlined">logout</span>
+        </div>
+      </header>
+
+      <!-- Desktop Sidebar -->
+      <aside class="sidebar">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <span class="material-symbols-outlined">corporate_fare</span>
+          </div>
+          <div class="logo-text">
+            <h1>WorkForce</h1>
+            <span>Employee Portal</span>
+          </div>
+        </div>
+
+        <nav class="nav-menu" aria-label="Employee navigation">
+          <div class="nav-label">Navigation</div>
+          <ul>
+            <li>
+              <a href="./dashboard.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon"
+                    >dashboard</span
+                  >
+                  <span>Dashboard</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a
+                href="./attendance.html"
+                class="nav-item active"
+                aria-current="page"
+              >
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">
+                    history
+                  </span>
+                  <span>Attendance</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./leave-requests.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">
+                    description
+                  </span>
+                  <span>My Leave Requests</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./profile.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">person</span>
+                  <span>My Profile</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="user-profile">
+          <div class="user-info">
+            <div class="avatar" id="employee-avatar"></div>
+            <div class="user-text">
+              <h4 id="employee-username">Employee</h4>
+              <p id="employee-position">&mdash;</p>
+            </div>
+          </div>
+          <div class="logout-btn">
+            <span class="material-symbols-outlined">logout</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="page-container">
+          <header class="page-header">
+            <div>
+              <span class="page-eyebrow">Time &amp; Attendance</span>
+              <h1 class="page-title">My Attendance</h1>
+              <p class="page-subtitle">
+                Record today&rsquo;s attendance and review your history.
+              </p>
+            </div>
+          </header>
+
+          <!-- Today's attendance -->
+          <section
+            class="today-card surface-card"
+            aria-labelledby="today-heading"
+          >
+            <div class="today-card__info">
+              <h2 class="today-card__heading" id="today-heading">
+                Today&rsquo;s Attendance
+              </h2>
+              <p class="today-card__date" id="today-date">&hellip;</p>
+
+              <div class="today-card__times">
+                <div>
+                  <span class="today-card__time-label">Check in</span>
+                  <span class="today-card__time-value" id="today-check-in"
+                    >&mdash;</span
+                  >
+                </div>
+                <div>
+                  <span class="today-card__time-label">Check out</span>
+                  <span class="today-card__time-value" id="today-check-out"
+                    >&mdash;</span
+                  >
+                </div>
+              </div>
+
+              <span class="status-pill status-pill--none" id="today-status">
+                <span class="material-symbols-outlined">schedule</span>
+                <span id="today-status-text">Loading</span>
+              </span>
+            </div>
+
+            <div class="today-card__actions">
+              <button
+                type="button"
+                id="check-in-button"
+                class="btn btn--primary"
+                hidden
+              >
+                <span class="material-symbols-outlined">login</span>
+                <span class="btn__label">Check In</span>
+              </button>
+
+              <button
+                type="button"
+                id="check-out-button"
+                class="btn btn--primary"
+                hidden
+              >
+                <span class="material-symbols-outlined">logout</span>
+                <span class="btn__label">Check Out</span>
+              </button>
+
+              <p class="today-card__hint" id="today-hint" hidden></p>
+            </div>
+          </section>
+
+          <!-- Result of the last check-in / check-out attempt -->
+          <div
+            id="attendance-feedback"
+            class="feedback"
+            role="status"
+            aria-live="polite"
+            hidden
+          >
+            <span class="material-symbols-outlined" id="feedback-icon"></span>
+            <span id="feedback-message"></span>
+          </div>
+
+          <!-- Attendance history -->
+          <section aria-labelledby="history-heading">
+            <div class="section-head">
+              <h2 class="section-heading" id="history-heading">
+                Attendance History
+              </h2>
+              <span class="record-count" id="history-count"></span>
+            </div>
+
+            <!-- Loading state -->
+            <div id="history-loading" class="state-block" role="status">
+              <div class="spinner"></div>
+              <p class="state-text">Loading your attendance history&hellip;</p>
+            </div>
+
+            <!-- Error state: 401 / 403 / 500 / network failure -->
+            <div
+              id="history-error"
+              class="state-block state-block--error"
+              role="alert"
+              hidden
+            >
+              <span class="material-symbols-outlined">error</span>
+              <p class="state-title" id="history-error-title">
+                We could not load your attendance history
+              </p>
+              <p class="state-text" id="history-error-message"></p>
+              <div class="state-actions">
+                <button type="button" id="history-retry" class="btn btn--primary">
+                  <span class="material-symbols-outlined">refresh</span>
+                  Try again
+                </button>
+                <a
+                  id="history-login-link"
+                  class="btn btn--ghost"
+                  href="../../index.html"
+                  hidden
+                >
+                  <span class="material-symbols-outlined">login</span>
+                  Go to sign in
+                </a>
+              </div>
+            </div>
+
+            <!-- Empty state -->
+            <div id="history-empty" class="state-block" hidden>
+              <span class="material-symbols-outlined">event_busy</span>
+              <p class="state-title">No attendance records yet</p>
+              <p class="state-text">
+                Once you record your first check-in, your attendance days will
+                be listed here.
+              </p>
+            </div>
+
+            <!-- Success state -->
+            <div id="history-content" hidden>
+              <div class="table-wrap">
+                <table class="history-table">
+                  <caption class="sr-only">
+                    Your recorded attendance days, most recent first
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Date</th>
+                      <th scope="col">Check In</th>
+                      <th scope="col">Check Out</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="history-rows"></tbody>
+                </table>
+              </div>
+              <p class="timezone-note">
+                Times are shown in Cairo time (Africa/Cairo), matching the
+                recorded work date.
+              </p>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- Mobile Bottom Navigation -->
+      <nav class="mobile-bottom-nav" aria-label="Employee navigation">
+        <a href="./dashboard.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Home</span>
+        </a>
+        <a
+          href="./attendance.html"
+          class="mobile-nav-item active"
+          aria-current="page"
+        >
+          <span class="material-symbols-outlined">history</span>
+          <span>Attendance</span>
+        </a>
+        <a href="./leave-requests.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">description</span>
+          <span>Leave</span>
+        </a>
+        <a href="./profile.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">person</span>
+          <span>Profile</span>
+        </a>
+      </nav>
+    </div>
+
+    <script type="module" src="../../assets/js/employee/attendance.js"></script>
+  </body>
+</html>

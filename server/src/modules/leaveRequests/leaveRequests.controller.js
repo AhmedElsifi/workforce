@@ -10,7 +10,14 @@ const createLeaveRequest = async (req, res) => {
       return res.status(400).json({ message: "All leave fields are required" });
     }
 
-    // 1. Validation: End date must be after start date
+    if (!employeeId || !leaveType || !startDate || !endDate || !reason) {
+      return res.status(400).json({
+        message:
+          "employeeId, leaveType, startDate, endDate and reason are required",
+      });
+    }
+
+    // End date must be after start date
     if (new Date(startDate) > new Date(endDate)) {
       return res.status(400).json({ message: "End date must be after start date" });
     }

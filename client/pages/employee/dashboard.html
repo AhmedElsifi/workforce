@@ -3,9 +3,238 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Employee Dashboard</title>
+    <title>WorkForce Portal - Employee Dashboard</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/employee/sidebar.css" />
+    <link rel="stylesheet" href="../../assets/css/employee/dashboard.css" />
   </head>
   <body>
-    Hello Employee
+    <div class="app-container">
+      <!-- Mobile Top Bar -->
+      <header class="mobile-top-bar">
+        <div class="brand">WorkForce</div>
+        <div class="user-actions">
+          <span id="employee-username-mobile">Employee</span>
+          <span class="material-symbols-outlined">logout</span>
+        </div>
+      </header>
+
+      <!-- Desktop Sidebar -->
+      <aside class="sidebar">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <span class="material-symbols-outlined">corporate_fare</span>
+          </div>
+          <div class="logo-text">
+            <h1>WorkForce</h1>
+            <span>Employee Portal</span>
+          </div>
+        </div>
+
+        <nav class="nav-menu" aria-label="Employee navigation">
+          <div class="nav-label">Navigation</div>
+          <ul>
+            <li>
+              <a
+                href="./dashboard.html"
+                class="nav-item active"
+                aria-current="page"
+              >
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon"
+                    >dashboard</span
+                  >
+                  <span>Dashboard</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./attendance.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">
+                    history
+                  </span>
+                  <span>Attendance</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./leave-requests.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">
+                    description
+                  </span>
+                  <span>My Leave Requests</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./profile.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">person</span>
+                  <span>My Profile</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="user-profile">
+          <div class="user-info">
+            <div class="avatar" id="employee-avatar"></div>
+            <div class="user-text">
+              <h4 id="employee-username">Employee</h4>
+              <p id="employee-position">&mdash;</p>
+            </div>
+          </div>
+          <div class="logout-btn">
+            <span class="material-symbols-outlined">logout</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="page-container">
+          <header class="page-header">
+            <div>
+              <span class="page-eyebrow">Overview</span>
+              <h1 class="page-title">Employee Dashboard</h1>
+              <p class="page-subtitle">
+                Welcome back, <span id="dashboard-employee-name">&hellip;</span>
+              </p>
+            </div>
+            <a class="btn btn--ghost" href="./attendance.html">
+              <span class="material-symbols-outlined">history</span>
+              View attendance
+            </a>
+          </header>
+
+          <section aria-labelledby="stats-heading">
+            <h2 id="stats-heading" class="sr-only">Attendance statistics</h2>
+
+            <!-- Loading state -->
+            <div id="dashboard-loading" class="state-block" role="status">
+              <div class="spinner"></div>
+              <p class="state-text">Loading your dashboard&hellip;</p>
+            </div>
+
+            <!-- Error state: 401 / 403 / 500 / network failure -->
+            <div
+              id="dashboard-error"
+              class="state-block state-block--error"
+              role="alert"
+              hidden
+            >
+              <span class="material-symbols-outlined">error</span>
+              <p class="state-title" id="dashboard-error-title">
+                We could not load your dashboard
+              </p>
+              <p class="state-text" id="dashboard-error-message"></p>
+              <div class="state-actions">
+                <button
+                  type="button"
+                  id="dashboard-retry"
+                  class="btn btn--primary"
+                >
+                  <span class="material-symbols-outlined">refresh</span>
+                  Try again
+                </button>
+                <a
+                  id="dashboard-login-link"
+                  class="btn btn--ghost"
+                  href="../../index.html"
+                  hidden
+                >
+                  <span class="material-symbols-outlined">login</span>
+                  Go to sign in
+                </a>
+              </div>
+            </div>
+
+            <!-- Success state -->
+            <div id="dashboard-stats" hidden>
+              <div class="stats-grid">
+                <article class="stat-card">
+                  <div class="stat-card__icon stat-card__icon--total">
+                    <span class="material-symbols-outlined"
+                      >calendar_month</span
+                    >
+                  </div>
+                  <div class="stat-card__body">
+                    <h3 class="stat-card__label">Total Attendance Days</h3>
+                    <p class="stat-card__value" id="stat-total">0</p>
+                    <p class="stat-card__hint">Days with a recorded check-in</p>
+                  </div>
+                </article>
+
+                <article class="stat-card">
+                  <div class="stat-card__icon stat-card__icon--completed">
+                    <span class="material-symbols-outlined">task_alt</span>
+                  </div>
+                  <div class="stat-card__body">
+                    <h3 class="stat-card__label">Completed Attendance Days</h3>
+                    <p class="stat-card__value" id="stat-completed">0</p>
+                    <p class="stat-card__hint">Checked in and checked out</p>
+                  </div>
+                </article>
+
+                <article class="stat-card">
+                  <div class="stat-card__icon stat-card__icon--open">
+                    <span class="material-symbols-outlined"
+                      >pending_actions</span
+                    >
+                  </div>
+                  <div class="stat-card__body">
+                    <h3 class="stat-card__label">Open Attendance Days</h3>
+                    <p class="stat-card__value" id="stat-open">0</p>
+                    <p class="stat-card__hint">Awaiting a check-out</p>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Shown only when every statistic is zero -->
+              <p class="stats-note" id="dashboard-empty" hidden>
+                <span class="material-symbols-outlined">info</span>
+                No attendance records yet. Your statistics will appear here once
+                you record your first check-in.
+              </p>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- Mobile Bottom Navigation -->
+      <nav class="mobile-bottom-nav" aria-label="Employee navigation">
+        <a
+          href="./dashboard.html"
+          class="mobile-nav-item active"
+          aria-current="page"
+        >
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Home</span>
+        </a>
+        <a href="./attendance.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">history</span>
+          <span>Attendance</span>
+        </a>
+        <a href="./leave-requests.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">description</span>
+          <span>Leave</span>
+        </a>
+        <a href="./profile.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">person</span>
+          <span>Profile</span>
+        </a>
+      </nav>
+    </div>
+
+    <script type="module" src="../../assets/js/employee/dashboard.js"></script>
   </body>
 </html>

@@ -1,17 +1,13 @@
 import jwt from "jsonwebtoken";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export const authenticate = (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
-    return res
-      .status(403)
-      .sendFile(path.join(__dirname, "../client/pages/auth/unauthorized.html"));
+    return res.status(401).json({
+      success: false,
+      message: "Not authenticated",
+    });
   }
 
   try {
@@ -30,11 +26,10 @@ export const authenticate = (req, res, next) => {
 export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return res
-        .status(403)
-        .sendFile(
-          path.join(__dirname, "../client/pages/auth/unauthorized.html"),
-        );
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
     }
 
     next();
