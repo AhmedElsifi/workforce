@@ -1,9 +1,5 @@
 const API_BASE = "http://127.0.0.1:3000";
 
-const usernameField = document.getElementById("admin-username");
-const usernameMobileField = document.getElementById("admin-username-mobile");
-const avatarField = document.getElementById("admin-avatar");
-
 const categoryFilter = document.getElementById("category-filter");
 const refreshBtn = document.getElementById("refresh-btn");
 const tableBody = document.getElementById("audit-table-body");
@@ -16,22 +12,6 @@ function formatDate(dateString) {
     dateStyle: "medium",
     timeStyle: "short",
   });
-}
-
-async function loadCurrentAdmin() {
-  const response = await fetch(`${API_BASE}/auth/me`, {
-    method: "GET",
-    credentials: "include",
-  });
-
-  if (!response.ok) return;
-
-  const user = await response.json();
-  const fullName = `${user.fname ?? ""} ${user.lname ?? ""}`.trim();
-
-  usernameField.textContent = fullName || "Admin";
-  usernameMobileField.textContent = fullName || "Admin";
-  avatarField.textContent = (user.fname?.[0] ?? "A") + (user.lname?.[0] ?? "");
 }
 
 function renderRows(logs) {
@@ -60,6 +40,11 @@ function renderRows(logs) {
 
 function renderPagination(paginationData) {
   const { page, pages } = paginationData;
+
+  if (pages <= 1) {
+    pagination.innerHTML = "";
+    return;
+  }
 
   pagination.innerHTML = `
     <button id="prev-page" ${page <= 1 ? "disabled" : ""}>Previous</button>
@@ -115,5 +100,4 @@ categoryFilter.addEventListener("change", () => {
 
 refreshBtn.addEventListener("click", () => loadAuditLog());
 
-loadCurrentAdmin();
 loadAuditLog();

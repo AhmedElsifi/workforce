@@ -1,18 +1,9 @@
-const API_BASE = "http://127.0.0.1:3000";
-
-const usernameField = document.getElementById("admin-username");
-const usernameMobileField = document.getElementById("admin-username-mobile");
-const avatarField = document.getElementById("admin-avatar");
+const API_URL = "http://127.0.0.1:3000";
 
 const kpiTotal = document.getElementById("kpi-total");
 const kpiActive = document.getElementById("kpi-active");
 const kpiInactive = document.getElementById("kpi-inactive");
 const kpiPendingLeave = document.getElementById("kpi-pending-leave");
-
-const attendanceRing = document.getElementById("attendance-ring");
-const attendanceRateText = document.getElementById("attendance-rate-text");
-const attendancePresent = document.getElementById("attendance-present");
-const attendanceAbsent = document.getElementById("attendance-absent");
 
 const deptDistribution = document.getElementById("dept-distribution");
 const activityFeed = document.getElementById("activity-feed");
@@ -38,36 +29,11 @@ function timeAgo(dateString) {
   return "just now";
 }
 
-async function loadCurrentAdmin() {
-  const response = await fetch(`${API_BASE}/auth/me`, {
-    method: "GET",
-    credentials: "include",
-  });
-
-  if (!response.ok) return;
-
-  const user = await response.json();
-  const fullName = `${user.fname ?? ""} ${user.lname ?? ""}`.trim();
-
-  usernameField.textContent = fullName || "Admin";
-  usernameMobileField.textContent = fullName || "Admin";
-  avatarField.textContent = (user.fname?.[0] ?? "A") + (user.lname?.[0] ?? "");
-}
-
 function renderKpis(kpis, pendingLeaveRequests) {
   kpiTotal.textContent = kpis.totalEmployees;
   kpiActive.textContent = kpis.activeEmployees;
   kpiInactive.textContent = kpis.inactiveEmployees;
   kpiPendingLeave.textContent = pendingLeaveRequests;
-}
-
-function renderAttendance(attendanceOverview) {
-  const { presentToday, absentToday, clockInRate } = attendanceOverview;
-
-  attendanceRing.style.setProperty("--pct", `${clockInRate}%`);
-  attendanceRateText.textContent = `${clockInRate}%`;
-  attendancePresent.textContent = presentToday;
-  attendanceAbsent.textContent = absentToday;
 }
 
 function renderDepartments(departments) {
@@ -109,7 +75,7 @@ function renderActivity(activity) {
           <div class="activity-icon">
             <span class="material-symbols-outlined" style="font-size:16px">history</span>
           </div>
-          <div>
+          <div class="activity-content">
             <span class="activity-desc">${entry.description}</span>
             <span class="activity-time">${timeAgo(entry.createdAt)}</span>
           </div>
@@ -120,7 +86,7 @@ function renderActivity(activity) {
 
 async function loadDashboard() {
   try {
-    const response = await fetch(`${API_BASE}/dashboard/admin`, {
+    const response = await fetch(`${API_URL}/dashboard/admin`, {
       method: "GET",
       credentials: "include",
     });
@@ -135,7 +101,6 @@ async function loadDashboard() {
     }
 
     renderKpis(data.kpis, data.pendingLeaveRequests);
-    renderAttendance(data.attendanceOverview);
     renderDepartments(data.departmentDistribution);
     renderActivity(data.recentActivity);
   } catch (error) {
@@ -143,5 +108,4 @@ async function loadDashboard() {
   }
 }
 
-loadCurrentAdmin();
-loadDashboard();
+document.addEventListener("DOMContentLoaded", loadDashboard);

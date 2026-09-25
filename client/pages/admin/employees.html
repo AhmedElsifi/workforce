@@ -21,8 +21,13 @@
       <header class="mobile-top-bar">
         <div class="brand">WorkForce</div>
         <div class="user-actions">
-          <span>Elena Ramos</span>
-          <span class="material-symbols-outlined">settings</span>
+          <span id="admin-username-mobile">Admin</span>
+          <span
+            class="material-symbols-outlined"
+            id="mobile-logout-btn"
+            style="cursor: pointer"
+            >logout</span
+          >
         </div>
       </header>
 
@@ -43,8 +48,10 @@
             <li>
               <a href="./dashboard.html" class="nav-item">
                 <div class="nav-left">
-                  <span class="material-symbols-outlined nav-icon">dashboard</span>
-                  <span>Dashboard & Analytics</span>
+                  <span class="material-symbols-outlined nav-icon"
+                    >dashboard</span
+                  >
+                  <span>Dashboard</span>
                 </div>
               </a>
             </li>
@@ -67,8 +74,18 @@
             <li>
               <a href="./audit.html" class="nav-item">
                 <div class="nav-left">
-                  <span class="material-symbols-outlined nav-icon">security</span>
-                  <span>System Audit & Logs</span>
+                  <span class="material-symbols-outlined nav-icon"
+                    >security</span
+                  >
+                  <span>System Audit</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./profile.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">person</span>
+                  <span>My Profile</span>
                 </div>
               </a>
             </li>
@@ -77,14 +94,18 @@
 
         <div class="admin-user-profile">
           <div class="user-info">
-            <div class="avatar">ER</div>
+            <div class="avatar" id="admin-avatar">--</div>
             <div class="user-text">
-              <h4 id="admin-username"></h4>
+              <h4 id="admin-username">Loading...</h4>
               <p>Admin</p>
             </div>
           </div>
-          <div class="settings-btn">
-            <span class="material-symbols-outlined">settings</span>
+          <div
+            class="settings-btn"
+            id="desktop-logout-btn"
+            style="cursor: pointer"
+          >
+            <span class="material-symbols-outlined">logout</span>
           </div>
         </div>
       </aside>
@@ -148,6 +169,111 @@
         </div>
       </main>
 
+      <div id="add-employee-modal" class="modal-overlay" hidden>
+        <div class="modal">
+          <div class="modal-header">
+            <h3>Add Employee</h3>
+            <button id="add-modal-close-btn" class="icon-btn" type="button">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <form id="add-employee-form">
+            <div class="input-field">
+              <label for="add-fname">First Name *</label>
+              <input type="text" id="add-fname" required />
+            </div>
+            <div class="input-field">
+              <label for="add-lname">Last Name *</label>
+              <input type="text" id="add-lname" required />
+            </div>
+            <div class="input-field">
+              <label for="add-email">Email *</label>
+              <input type="email" id="add-email" required />
+              <span class="field-error" id="add-email-error"></span>
+            </div>
+            <div class="input-field">
+              <label for="add-password">Password *</label>
+              <input type="password" id="add-password" required />
+              <span class="field-error" id="add-password-error"></span>
+            </div>
+            <div class="input-field">
+              <label for="add-position">Position</label>
+              <input type="text" id="add-position" />
+            </div>
+            <div class="input-field">
+              <label for="add-department">Department</label>
+              <select id="add-department">
+                <option value="">No department</option>
+              </select>
+            </div>
+            <div class="input-field">
+              <label for="add-salary">Salary</label>
+              <input type="number" id="add-salary" min="0" />
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" id="add-cancel-btn" class="btn-secondary">
+                Cancel
+              </button>
+              <button type="submit" class="btn-primary">Add Employee</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="edit-employee-modal" class="modal-overlay" hidden>
+        <div class="modal">
+          <div class="modal-header">
+            <h3>Edit Employee</h3>
+            <button id="edit-modal-close-btn" class="icon-btn" type="button">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <form id="edit-employee-form">
+            <input type="hidden" id="edit-employee-id" />
+
+            <div class="input-field">
+              <label for="edit-position">Position</label>
+              <input type="text" id="edit-position" />
+            </div>
+            <div class="input-field">
+              <label for="edit-role">Role</label>
+              <select id="edit-role">
+                <option value="employee">Employee</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <div class="input-field">
+              <label for="edit-department">Department</label>
+              <select id="edit-department">
+                <option value="">No department</option>
+              </select>
+            </div>
+            <div class="input-field">
+              <label for="edit-salary">Salary</label>
+              <input type="number" id="edit-salary" min="0" />
+            </div>
+            <div class="input-field">
+              <label for="edit-status">Status</label>
+              <select id="edit-status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" id="edit-cancel-btn" class="btn-secondary">
+                Cancel
+              </button>
+              <button type="submit" class="btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <nav class="mobile-bottom-nav">
         <a href="./dashboard.html" class="mobile-nav-item">
           <span class="material-symbols-outlined">dashboard</span>
@@ -165,115 +291,18 @@
           <span class="material-symbols-outlined">security</span>
           <span>Audit</span>
         </a>
+        <a href="./profile.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">person</span>
+          <span>Profile</span>
+        </a>
       </nav>
     </div>
 
-    <div id="add-employee-modal" class="modal-overlay" hidden>
-      <div class="modal">
-        <div class="modal-header">
-          <h3>Add Employee</h3>
-          <button id="add-modal-close-btn" class="icon-btn" type="button">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-
-        <form id="add-employee-form">
-          <div class="input-field">
-            <label for="add-fname">First Name *</label>
-            <input type="text" id="add-fname" required />
-          </div>
-          <div class="input-field">
-            <label for="add-lname">Last Name *</label>
-            <input type="text" id="add-lname" required />
-          </div>
-          <div class="input-field">
-            <label for="add-email">Email *</label>
-            <input type="email" id="add-email" required />
-            <span class="field-error" id="add-email-error"></span>
-          </div>
-          <div class="input-field">
-            <label for="add-password">Password *</label>
-            <input type="password" id="add-password" required />
-            <span class="field-error" id="add-password-error"></span>
-          </div>
-          <div class="input-field">
-            <label for="add-position">Position</label>
-            <input type="text" id="add-position" />
-          </div>
-          <div class="input-field">
-            <label for="add-department">Department</label>
-            <select id="add-department">
-              <option value="">No department</option>
-            </select>
-          </div>
-          <div class="input-field">
-            <label for="add-salary">Salary</label>
-            <input type="number" id="add-salary" min="0" />
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" id="add-cancel-btn" class="btn-secondary">
-              Cancel
-            </button>
-            <button type="submit" class="btn-primary">Add Employee</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div id="edit-employee-modal" class="modal-overlay" hidden>
-      <div class="modal">
-        <div class="modal-header">
-          <h3>Edit Employee</h3>
-          <button id="edit-modal-close-btn" class="icon-btn" type="button">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-
-        <form id="edit-employee-form">
-          <input type="hidden" id="edit-employee-id" />
-
-          <div class="input-field">
-            <label for="edit-position">Position</label>
-            <input type="text" id="edit-position" />
-          </div>
-          <div class="input-field">
-            <label for="edit-role">Role</label>
-            <select id="edit-role">
-              <option value="employee">Employee</option>
-              <option value="manager">Manager</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <div class="input-field">
-            <label for="edit-department">Department</label>
-            <select id="edit-department">
-              <option value="">No department</option>
-            </select>
-          </div>
-          <div class="input-field">
-            <label for="edit-salary">Salary</label>
-            <input type="number" id="edit-salary" min="0" />
-          </div>
-          <div class="input-field">
-            <label for="edit-status">Status</label>
-            <select id="edit-status">
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" id="edit-cancel-btn" class="btn-secondary">
-              Cancel
-            </button>
-            <button type="submit" class="btn-primary">Save Changes</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <script src="../../assets/js/admin/global.js" defer></script>
-    <script src="../../assets/js/admin/employees.js" defer></script>
+    <script src="../../assets/js/admin/global.js" type="module"></script>
+    <script
+      src="../../assets/js/admin/employees.js"
+      type="module"
+      defer
+    ></script>
   </body>
 </html>

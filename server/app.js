@@ -17,7 +17,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://127.0.0.1:5500",
+    origin: [
+      "http://127.0.0.1:5500",
+      "https://iti-project-workforce.vercel.app/",
+    ],
     credentials: true,
   }),
 );
@@ -33,8 +36,6 @@ app.use(departmentsRoutes);
 app.use(leaveRoutes);
 app.use(attendanceRoutes);
 
-// Leave Management Routes
-
-app.listen(3000, () => {
-  console.log("server is running on port 3000");
+app.listen(process.env.PORT, () => {
+  console.log(`server is running on port ${process.env.PORT}`);
 });
