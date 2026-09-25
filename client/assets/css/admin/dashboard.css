@@ -10,10 +10,8 @@
   background-color: #f8fafc;
   padding: 32px 40px;
   overflow-y: auto;
-  display: block;
 }
 
-/* Dashboard Layout */
 .dashboard {
   max-width: 1200px;
   margin: 0 auto;
@@ -39,7 +37,6 @@
   color: #64748b;
 }
 
-/* KPI Grid */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -111,13 +108,6 @@
   color: #1e293b;
 }
 
-/* Panels (Cards) */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
 .panel {
   background-color: #ffffff;
   border-radius: 12px;
@@ -158,91 +148,6 @@
   color: #4f46e5;
 }
 
-/* Attendance Overview */
-.attendance-overview {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-}
-
-.attendance-rate-ring {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.ring {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: conic-gradient(#6366f1 var(--progress, 0%), #e2e8f0 0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.ring::before {
-  content: "";
-  position: absolute;
-  width: 90px;
-  height: 90px;
-  background-color: #ffffff;
-  border-radius: 50%;
-}
-
-.ring span {
-  position: relative;
-  z-index: 1;
-  font-size: 24px;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.attendance-rate-ring p {
-  font-size: 13px;
-  font-weight: 500;
-  color: #64748b;
-}
-
-.attendance-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex-grow: 1;
-}
-
-.attendance-stat {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  color: #475569;
-}
-
-.attendance-stat strong {
-  margin-left: auto;
-  color: #1e293b;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.dot-present {
-  background-color: #10b981;
-}
-
-.dot-absent {
-  background-color: #ef4444;
-}
-
-/* Lists (Departments & Activity) */
 .dept-list,
 .activity-feed {
   list-style: none;
@@ -253,38 +158,113 @@
   gap: 16px;
 }
 
+.dept-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 40px;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.dept-name {
+  color: #475569;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dept-bar-track {
+  display: block;
+  height: 10px;
+  background-color: #f1f5f9;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.dept-bar-fill {
+  display: block;
+  height: 100%;
+  background-color: #6366f1;
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+
+.dept-count {
+  text-align: right;
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 14px;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
+}
+
+.activity-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e0e7ff;
+  color: #4338ca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-desc {
+  font-size: 13px;
+  color: #1e293b;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.activity-time {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
 .empty-state {
   color: #94a3b8;
   font-size: 14px;
   text-align: center;
   padding: 24px 0;
   font-style: italic;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
+  list-style: none;
 }
 
 @media (max-width: 768px) {
+  .app-container {
+    display: block;
+  }
+
   .main-content {
     padding: 20px;
-    padding-bottom: 80px; /* Space for mobile bottom nav */
-  }
-
-  .attendance-overview {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
-  }
-
-  .attendance-stats {
-    width: 100%;
+    padding-bottom: 80px;
   }
 
   .kpi-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dept-row {
+    grid-template-columns: 120px 1fr 32px;
+    gap: 10px;
   }
 }

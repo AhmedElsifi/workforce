@@ -21,8 +21,13 @@
       <header class="mobile-top-bar">
         <div class="brand">WorkForce</div>
         <div class="user-actions">
-          <span>Elena Ramos</span>
-          <span class="material-symbols-outlined">settings</span>
+          <span id="admin-username-mobile">Admin</span>
+          <span
+            class="material-symbols-outlined"
+            id="mobile-logout-btn"
+            style="cursor: pointer"
+            >logout</span
+          >
         </div>
       </header>
 
@@ -43,8 +48,10 @@
             <li>
               <a href="./dashboard.html" class="nav-item">
                 <div class="nav-left">
-                  <span class="material-symbols-outlined nav-icon">dashboard</span>
-                  <span>Dashboard & Analytics</span>
+                  <span class="material-symbols-outlined nav-icon"
+                    >dashboard</span
+                  >
+                  <span>Dashboard</span>
                 </div>
               </a>
             </li>
@@ -67,8 +74,18 @@
             <li>
               <a href="./audit.html" class="nav-item">
                 <div class="nav-left">
-                  <span class="material-symbols-outlined nav-icon">security</span>
-                  <span>System Audit & Logs</span>
+                  <span class="material-symbols-outlined nav-icon"
+                    >security</span
+                  >
+                  <span>System Audit</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="./profile.html" class="nav-item">
+                <div class="nav-left">
+                  <span class="material-symbols-outlined nav-icon">person</span>
+                  <span>My Profile</span>
                 </div>
               </a>
             </li>
@@ -77,14 +94,18 @@
 
         <div class="admin-user-profile">
           <div class="user-info">
-            <div class="avatar">ER</div>
+            <div class="avatar" id="admin-avatar">--</div>
             <div class="user-text">
-              <h4 id="admin-username"></h4>
+              <h4 id="admin-username">Loading...</h4>
               <p>Admin</p>
             </div>
           </div>
-          <div class="settings-btn">
-            <span class="material-symbols-outlined">settings</span>
+          <div
+            class="settings-btn"
+            id="desktop-logout-btn"
+            style="cursor: pointer"
+          >
+            <span class="material-symbols-outlined">logout</span>
           </div>
         </div>
       </aside>
@@ -120,9 +141,69 @@
 
         <div id="departments-empty" class="empty-state" hidden>
           <span class="material-symbols-outlined">domain_disabled</span>
-          <p>No departments yet. Click "Add Department" to create the first one.</p>
+          <p>
+            No departments yet. Click "Add Department" to create the first one.
+          </p>
         </div>
       </main>
+
+      <div id="department-modal" class="modal-overlay" hidden>
+        <div class="modal">
+          <div class="modal-header">
+            <h3 id="modal-title">Add Department</h3>
+            <button id="modal-close-btn" class="icon-btn" type="button">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <form id="department-form">
+            <input type="hidden" id="department-id" />
+
+            <div class="input-field">
+              <label for="department-name">Department Name *</label>
+              <input type="text" id="department-name" required />
+              <span class="field-error" id="department-name-error"></span>
+            </div>
+
+            <div class="input-field">
+              <label for="department-description">Description</label>
+              <textarea id="department-description" rows="3"></textarea>
+            </div>
+
+            <div class="input-field">
+              <label for="department-manager">Manager</label>
+              <select id="department-manager">
+                <option value="">No manager assigned</option>
+              </select>
+              <span class="field-error" id="department-manager-error"></span>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" id="modal-cancel-btn" class="btn-secondary">
+                Cancel
+              </button>
+              <button type="submit" id="modal-submit-btn" class="btn-primary">
+                Save Department
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="delete-modal" class="modal-overlay" hidden>
+        <div class="modal modal-small">
+          <h3>Delete Department?</h3>
+          <p id="delete-modal-text">This action cannot be undone.</p>
+          <div class="modal-actions">
+            <button type="button" id="delete-cancel-btn" class="btn-secondary">
+              Cancel
+            </button>
+            <button type="button" id="delete-confirm-btn" class="btn-danger">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
 
       <nav class="mobile-bottom-nav">
         <a href="./dashboard.html" class="mobile-nav-item">
@@ -141,68 +222,18 @@
           <span class="material-symbols-outlined">security</span>
           <span>Audit</span>
         </a>
+        <a href="./profile.html" class="mobile-nav-item">
+          <span class="material-symbols-outlined">person</span>
+          <span>Profile</span>
+        </a>
       </nav>
     </div>
 
-    <div id="department-modal" class="modal-overlay" hidden>
-      <div class="modal">
-        <div class="modal-header">
-          <h3 id="modal-title">Add Department</h3>
-          <button id="modal-close-btn" class="icon-btn" type="button">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-
-        <form id="department-form">
-          <input type="hidden" id="department-id" />
-
-          <div class="input-field">
-            <label for="department-name">Department Name *</label>
-            <input type="text" id="department-name" required />
-            <span class="field-error" id="department-name-error"></span>
-          </div>
-
-          <div class="input-field">
-            <label for="department-description">Description</label>
-            <textarea id="department-description" rows="3"></textarea>
-          </div>
-
-          <div class="input-field">
-            <label for="department-manager">Manager</label>
-            <select id="department-manager">
-              <option value="">No manager assigned</option>
-            </select>
-            <span class="field-error" id="department-manager-error"></span>
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" id="modal-cancel-btn" class="btn-secondary">
-              Cancel
-            </button>
-            <button type="submit" id="modal-submit-btn" class="btn-primary">
-              Save Department
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div id="delete-modal" class="modal-overlay" hidden>
-      <div class="modal modal-small">
-        <h3>Delete Department?</h3>
-        <p id="delete-modal-text">This action cannot be undone.</p>
-        <div class="modal-actions">
-          <button type="button" id="delete-cancel-btn" class="btn-secondary">
-            Cancel
-          </button>
-          <button type="button" id="delete-confirm-btn" class="btn-danger">
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <script src="../../assets/js/admin/global.js" defer></script>
-    <script src="../../assets/js/admin/departments.js" defer></script>
+    <script src="../../assets/js/admin/global.js" type="module"></script>
+    <script
+      src="../../assets/js/admin/departments.js"
+      type="module"
+      defer
+    ></script>
   </body>
 </html>
