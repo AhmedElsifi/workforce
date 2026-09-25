@@ -1,6 +1,4 @@
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 import {
   adminDashboard,
@@ -43,17 +41,6 @@ dashboardRoutes.get(
   authenticate,
   authorize("employee"),
   employeeDashboard,
-);
-
-dashboardRoutes.get(
-  "/pages/admin/dashboard.html",
-  authenticate,
-  authorize("admin"),
-  (req, res) => {
-    res.sendFile(
-      path.resolve(__dirname, "../../../../client/pages/admin/dashboard.html"),
-    );
-  },
 );
 
 export default dashboardRoutes;
