@@ -21,11 +21,17 @@
       <header class="mobile-top-bar">
         <div class="brand">WorkForce</div>
         <div class="user-actions">
-          <span id="employee-username-mobile"></span>
-          <span class="material-symbols-outlined">logout</span>
+          <span id="employee-username-mobile">Employee</span>
+          <span
+            class="material-symbols-outlined"
+            id="mobile-logout-btn"
+            style="cursor: pointer"
+            >logout</span
+          >
         </div>
       </header>
 
+      <!-- Desktop Sidebar -->
       <aside class="sidebar">
         <div class="logo-section">
           <div class="logo-icon">
@@ -56,7 +62,7 @@
                   <span class="material-symbols-outlined nav-icon"
                     >history</span
                   >
-                  <span>Attendance History</span>
+                  <span>Attendance</span>
                 </div>
               </a>
             </li>
@@ -68,7 +74,6 @@
                   >
                   <span>My Leave Requests</span>
                 </div>
-                <span class="badge">2 Pending</span>
               </a>
             </li>
             <li>
@@ -84,13 +89,17 @@
 
         <div class="user-profile">
           <div class="user-info">
-            <div class="avatar" id="employee-avatar">--</div>
+            <div class="avatar" id="employee-avatar"></div>
             <div class="user-text">
-              <h4 id="employee-username">Loading...</h4>
-              <p id="employee-role">Employee</p>
+              <h4 id="employee-username">Employee</h4>
+              <p id="employee-position">&mdash;</p>
             </div>
           </div>
-          <div class="logout-btn">
+          <div
+            class="logout-btn"
+            id="desktop-logout-btn"
+            style="cursor: pointer"
+          >
             <span class="material-symbols-outlined">logout</span>
           </div>
         </div>
@@ -197,6 +206,11 @@
         </a>
       </nav>
     </div>
+    <script
+      src="../../assets/js/employee/global.js"
+      type="module"
+      defer
+    ></script>
     <script src="../../assets/js/employee/leave-requests.js" defer></script>
   </body>
 </html>

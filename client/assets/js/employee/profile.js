@@ -1,3 +1,4 @@
+import { API_URL } from "../config.js";
 import { getCurrentEmployee, toTitleCase } from "./global.js";
 
 const EM_DASH = "—";
@@ -5,7 +6,6 @@ const EM_DASH = "—";
 const editableFields = {
   fname: document.getElementById("fname"),
   lname: document.getElementById("lname"),
-  email: document.getElementById("email"),
 };
 
 const readOnlyFields = {
@@ -34,9 +34,6 @@ function renderReadOnlyFields(employee) {
     employee?.employmentStatus,
   );
 
-  // `/auth/me` does not expose the department name (it is stored as a
-  // reference), so the field degrades to a placeholder rather than printing
-  // a raw identifier.
   readOnlyFields.department.textContent = displayValue(employee?.department);
 }
 
@@ -50,11 +47,9 @@ async function initProfile() {
   try {
     const employee = await getCurrentEmployee();
 
-    // Editable inputs keep the stored values verbatim so nothing is
-    // accidentally reformatted on save.
     editableFields.fname.value = employee?.fname ?? "";
     editableFields.lname.value = employee?.lname ?? "";
-    editableFields.email.value = employee?.email ?? "";
+    document.getElementById("email").value = employee?.email ?? "";
 
     renderReadOnlyFields(employee);
   } catch (error) {
@@ -62,5 +57,47 @@ async function initProfile() {
     renderUnavailable();
   }
 }
+
+const profileForm = document.getElementById("profileForm");
+
+profileForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const fname = document.getElementById("fname").value.trim();
+  const lname = document.getElementById("lname").value.trim();
+  const password = document.getElementById("password").value;
+
+  const payload = { fname, lname };
+
+  if (password) {
+    payload.password = password;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/auth/me`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(data.message || "Profile updated successfully!");
+
+      document.getElementById("password").value = "";
+
+      initProfile();
+    } else {
+      alert(data.message || "Failed to update profile. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    alert("An error occurred while trying to save your changes.");
+  }
+});
 
 initProfile();

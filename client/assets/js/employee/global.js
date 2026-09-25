@@ -1,3 +1,5 @@
+import { API_URL } from "../config.js";
+
 import { apiRequest } from "./api.js";
 
 let currentEmployeeRequest = null;
@@ -54,5 +56,30 @@ async function renderShellIdentity() {
     setText("employee-position", "—");
   }
 }
+
+const handleLogout = async () => {
+  try {
+    const res = await fetch(`${API_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      window.location.href = "../../index.html";
+    } else {
+      console.error("Logout failed on server");
+    }
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
+};
+
+document
+  .getElementById("desktop-logout-btn")
+  ?.addEventListener("click", handleLogout);
+
+document
+  .getElementById("mobile-logout-btn")
+  ?.addEventListener("click", handleLogout);
 
 renderShellIdentity();

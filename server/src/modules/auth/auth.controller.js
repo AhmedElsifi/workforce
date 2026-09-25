@@ -7,7 +7,6 @@ let login = async (req, res) => {
   const userData = req.body;
   const errors = validateLogin(userData);
 
-  // checks whether there is errors or not:
   if (Object.keys(errors).length > 0) {
     return res.status(400).json({
       success: false,
@@ -15,7 +14,6 @@ let login = async (req, res) => {
     });
   }
 
-  // exists?
   const existingUser = await userModel.findOne({
     email: userData.email.toLowerCase().trim(),
   });
@@ -72,8 +70,6 @@ let login = async (req, res) => {
 
 let getCurrentUser = async (req, res) => {
   try {
-    // The route is guarded by authenticate, so the identity comes from the
-    // verified token rather than from anything the client sent.
     const user = await userModel
       .findById(req.user._id)
       .select("fname lname email role position salary employmentStatus");
@@ -107,13 +103,23 @@ let getCurrentUser = async (req, res) => {
 const updateCurrentUser = async (req, res) => {
   try {
     const employeeId = req.user._id;
+    const userRole = req.user.role;
 
-    const allowedFields = [
+    const employeeAllowedFields = ["fname", "lname", "password"];
+    const adminAllowedFields = [
       "fname",
       "lname",
       "email",
       "password",
+      "role",
+      "position",
+      "department",
+      "salary",
+      "employmentStatus",
     ];
+
+    const allowedFields =
+      userRole === "admin" ? adminAllowedFields : employeeAllowedFields;
 
     const receivedFields = Object.keys(req.body);
 
@@ -124,7 +130,7 @@ const updateCurrentUser = async (req, res) => {
     if (invalidField) {
       return res.status(400).json({
         success: false,
-        message: `Field '${invalidField}' cannot be updated by employee`,
+        message: `Field '${invalidField}' cannot be updated`,
       });
     }
 
@@ -138,24 +144,44 @@ const updateCurrentUser = async (req, res) => {
       updates.lname = req.body.lname;
     }
 
-    if (req.body.email !== undefined) {
-      updates.email = req.body.email;
-    }
-
-    if (req.body.password !== undefined) {
+    if (req.body.password !== undefined && req.body.password !== "") {
       updates.password = await bcrypt.hash(req.body.password, 10);
     }
 
-    const user = await userModel.findByIdAndUpdate(
-      employeeId,
-      updates,
-      {
+    if (userRole === "admin") {
+      if (req.body.email !== undefined) {
+        updates.email = req.body.email;
+      }
+
+      if (req.body.role !== undefined) {
+        updates.role = req.body.role;
+      }
+
+      if (req.body.position !== undefined) {
+        updates.position = req.body.position;
+      }
+
+      if (req.body.department !== undefined) {
+        updates.department = req.body.department;
+      }
+
+      if (req.body.salary !== undefined) {
+        updates.salary = req.body.salary;
+      }
+
+      if (req.body.employmentStatus !== undefined) {
+        updates.employmentStatus = req.body.employmentStatus;
+      }
+    }
+
+    const user = await userModel
+      .findByIdAndUpdate(employeeId, updates, {
         new: true,
         runValidators: true,
-      },
-    ).select(
-      "fname lname email position department role salary employmentStatus",
-    );
+      })
+      .select(
+        "fname lname email position department role salary employmentStatus",
+      );
 
     if (!user) {
       return res.status(404).json({
@@ -179,6 +205,13 @@ const updateCurrentUser = async (req, res) => {
       });
     }
 
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -186,4 +219,24 @@ const updateCurrentUser = async (req, res) => {
   }
 };
 
-export { login, getCurrentUser, updateCurrentUser };
+const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: false,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+export { login, getCurrentUser, updateCurrentUser, logout };
