@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import departmentModel from "../../../db/models/department.model.js";
 import userModel from "../../../db/models/user.model.js";
 
@@ -12,8 +13,9 @@ const createDepartment = async (req, res) => {
       },
     });
   }
+
   const existing = await departmentModel.findOne({
-    name: name.trim(),
+    name: { $regex: `^${name.trim()}$`, $options: "i" },
   });
   if (existing) {
     return res.status(409).json({
@@ -23,6 +25,23 @@ const createDepartment = async (req, res) => {
       },
     });
   }
+
+  if (manager) {
+    if (!mongoose.isValidObjectId(manager)) {
+      return res.status(400).json({
+        success: false,
+        errors: { manager: "Invalid manager ID format" },
+      });
+    }
+    const managerExists = await userModel.findById(manager);
+    if (!managerExists) {
+      return res.status(404).json({
+        success: false,
+        errors: { manager: "Manager not found" },
+      });
+    }
+  }
+
   const department = await departmentModel.create({
     name: name.trim(),
     description,
@@ -33,6 +52,7 @@ const createDepartment = async (req, res) => {
     department,
   });
 };
+
 const getDepartments = async (req, res) => {
   const departments = await departmentModel
     .find()
@@ -113,6 +133,35 @@ const updateDepartment = async (req, res) => {
         name: "Department name is required",
       },
     });
+  }
+
+  const existing = await departmentModel.findOne({
+    name: { $regex: `^${name.trim()}$`, $options: "i" },
+    _id: { $ne: req.params.id },
+  });
+  if (existing) {
+    return res.status(409).json({
+      success: false,
+      errors: {
+        name: "Department already exists",
+      },
+    });
+  }
+
+  if (manager) {
+    if (!mongoose.isValidObjectId(manager)) {
+      return res.status(400).json({
+        success: false,
+        errors: { manager: "Invalid manager ID format" },
+      });
+    }
+    const managerExists = await userModel.findById(manager);
+    if (!managerExists) {
+      return res.status(404).json({
+        success: false,
+        errors: { manager: "Manager not found" },
+      });
+    }
   }
 
   const department = await departmentModel.findByIdAndUpdate(
