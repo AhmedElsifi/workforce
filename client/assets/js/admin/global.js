@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:3000";
+import { API_URL } from "../config.js";
 
 export async function getCurrentAdmin() {
   const res = await fetch(`${API_URL}/auth/me`, {

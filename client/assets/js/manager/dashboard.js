@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:3000";
+import { API_URL } from "../config.js";
 
 const usernameField = document.getElementById("manager-username");
 const usernameMobileField = document.getElementById("manager-username-mobile");
@@ -17,7 +17,7 @@ const attendancePresent = document.getElementById("attendance-present");
 const attendanceAbsent = document.getElementById("attendance-absent");
 
 async function loadCurrentManager() {
-  const response = await fetch(`${API_BASE}/auth/me`, {
+  const response = await fetch(`${API_URL}/auth/me`, {
     method: "GET",
     credentials: "include",
   });
@@ -34,7 +34,7 @@ async function loadCurrentManager() {
 
 async function loadDashboard() {
   try {
-    const response = await fetch(`${API_BASE}/dashboard/manager`, {
+    const response = await fetch(`${API_URL}/dashboard/manager`, {
       method: "GET",
       credentials: "include",
     });

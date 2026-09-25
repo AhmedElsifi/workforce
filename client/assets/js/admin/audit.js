@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:3000";
+import { API_URL } from "../config.js";
 
 const categoryFilter = document.getElementById("category-filter");
 const refreshBtn = document.getElementById("refresh-btn");
@@ -71,7 +71,7 @@ async function loadAuditLog() {
     const params = new URLSearchParams({ page: currentPage, limit: 20 });
     if (categoryFilter.value) params.set("category", categoryFilter.value);
 
-    const response = await fetch(`${API_BASE}/audit?${params.toString()}`, {
+    const response = await fetch(`${API_URL}/audit?${params.toString()}`, {
       method: "GET",
       credentials: "include",
     });

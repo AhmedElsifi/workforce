@@ -1,6 +1,5 @@
 import { getCurrentAdmin } from "./global.js";
-
-const API_URL = "http://127.0.0.1:3000";
+import { API_URL } from "../config.js";
 
 const feedbackEl = document.getElementById("profile-feedback");
 const form = document.getElementById("profileForm");

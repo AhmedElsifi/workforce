@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:3000";
+import { API_URL } from "../config.js";
 
 const tableBody = document.getElementById("departments-table-body");
 const emptyState = document.getElementById("departments-empty");
@@ -45,13 +45,16 @@ async function loadDepartments() {
   showFeedback("Loading departments...", "loading");
 
   try {
-    const response = await fetch(`${API_BASE}/departments`, {
+    const response = await fetch(`${API_URL}/departments`, {
       credentials: "include",
     });
     const data = await response.json();
 
     if (!response.ok) {
-      showFeedback(data.errors?.message || "Could not load departments.", "error");
+      showFeedback(
+        data.errors?.message || "Could not load departments.",
+        "error",
+      );
       return;
     }
 
@@ -97,8 +100,12 @@ function renderTable(departments) {
       </td>
     `;
 
-    row.querySelector(".edit-btn").addEventListener("click", () => openEditModal(dept));
-    row.querySelector(".delete-btn").addEventListener("click", () => openDeleteModal(dept));
+    row
+      .querySelector(".edit-btn")
+      .addEventListener("click", () => openEditModal(dept));
+    row
+      .querySelector(".delete-btn")
+      .addEventListener("click", () => openDeleteModal(dept));
 
     tableBody.appendChild(row);
   });
@@ -108,7 +115,7 @@ async function loadManagerOptions(selectedManagerId) {
   managerField.innerHTML = '<option value="">No manager assigned</option>';
 
   try {
-    const response = await fetch(`${API_BASE}/employees?role=manager`, {
+    const response = await fetch(`${API_URL}/employees?role=manager`, {
       credentials: "include",
     });
     const data = await response.json();
@@ -165,7 +172,7 @@ form.addEventListener("submit", async (e) => {
     manager: managerField.value || null,
   };
 
-  const url = id ? `${API_BASE}/departments/${id}` : `${API_BASE}/departments`;
+  const url = id ? `${API_URL}/departments/${id}` : `${API_URL}/departments`;
   const method = id ? "PUT" : "POST";
 
   try {
@@ -188,7 +195,9 @@ form.addEventListener("submit", async (e) => {
 
     closeModal();
     showFeedback(
-      id ? "Department updated successfully." : "Department created successfully.",
+      id
+        ? "Department updated successfully."
+        : "Department created successfully.",
       "success",
     );
     loadDepartments();
@@ -212,15 +221,21 @@ deleteConfirmBtn.addEventListener("click", async () => {
   if (!departmentToDelete) return;
 
   try {
-    const response = await fetch(`${API_BASE}/departments/${departmentToDelete._id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${API_URL}/departments/${departmentToDelete._id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
     const data = await response.json();
     deleteModal.hidden = true;
 
     if (!response.ok) {
-      showFeedback(data.errors?.message || "Could not delete department.", "error");
+      showFeedback(
+        data.errors?.message || "Could not delete department.",
+        "error",
+      );
       departmentToDelete = null;
       return;
     }

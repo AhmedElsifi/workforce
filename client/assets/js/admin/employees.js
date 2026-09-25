@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:3000";
+import { API_URL } from "../config.js";
 
 const tableBody = document.getElementById("employees-table-body");
 const emptyState = document.getElementById("employees-empty");
@@ -42,7 +42,7 @@ function clearFeedback() {
 
 async function loadDepartmentOptions() {
   try {
-    const response = await fetch(`${API_BASE}/departments`, {
+    const response = await fetch(`${API_URL}/departments`, {
       credentials: "include",
     });
     const data = await response.json();
@@ -77,7 +77,7 @@ async function loadEmployees() {
 
   try {
     const query = buildQuery();
-    const response = await fetch(`${API_BASE}/employees${query ? "?" + query : ""}`, {
+    const response = await fetch(`${API_URL}/employees${query ? "?" + query : ""}`, {
       credentials: "include",
     });
     const data = await response.json();
@@ -177,7 +177,7 @@ addForm.addEventListener("submit", async (e) => {
   };
 
   try {
-    const response = await fetch(`${API_BASE}/employees`, {
+    const response = await fetch(`${API_URL}/employees`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -230,7 +230,7 @@ editForm.addEventListener("submit", async (e) => {
   };
 
   try {
-    const response = await fetch(`${API_BASE}/employees/${editIdField.value}`, {
+    const response = await fetch(`${API_URL}/employees/${editIdField.value}`, {
       method: "PUT",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -260,7 +260,7 @@ async function toggleStatus(emp) {
 
   try {
     const response = activating
-      ? await fetch(`${API_BASE}/employees/${emp._id}`, {
+      ? await fetch(`${API_URL}/employees/${emp._id}`, {
           method: "PUT",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -272,7 +272,7 @@ async function toggleStatus(emp) {
             employmentStatus: "active",
           }),
         })
-      : await fetch(`${API_BASE}/employees/${emp._id}/deactivate`, {
+      : await fetch(`${API_URL}/employees/${emp._id}/deactivate`, {
           method: "PATCH",
           credentials: "include",
         });

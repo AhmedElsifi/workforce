@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:3000/leave-requests";
+import { API_URL } from "../config.js";
 
 document.getElementById("leaveForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -11,7 +11,7 @@ document.getElementById("leaveForm").addEventListener("submit", async (e) => {
   };
 
   try {
-    const res = await fetch(`${API_URL}/new-request`, {
+    const res = await fetch(`${API_URL}/leave-requests/new-request`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -37,7 +37,7 @@ async function loadRequests() {
   const tbody = document.getElementById("requestsTable");
 
   try {
-    const res = await fetch(`${API_URL}/my-requests`, {
+    const res = await fetch(`${API_URL}/leave-requests/my-requests`, {
       credentials: "include",
       method: "GET",
     });

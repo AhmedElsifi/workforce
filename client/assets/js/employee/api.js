@@ -1,4 +1,4 @@
-export const API_BASE = "http://127.0.0.1:3000";
+import { API_URL } from "../config.js";
 
 export class ApiError extends Error {
   constructor(status, message) {
@@ -54,7 +54,7 @@ export async function apiRequest(path, options = {}) {
   let response;
 
   try {
-    response = await fetch(`${API_BASE}${path}`, {
+    response = await fetch(`${API_URL}${path}`, {
       credentials: "include",
       ...options,
     });

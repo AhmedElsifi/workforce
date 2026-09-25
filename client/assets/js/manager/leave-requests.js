@@ -3,11 +3,6 @@ import { API_URL } from "../config.js";
 let currentFilter = "pending";
 
 function getEndpoint() {
-  // If you use query params instead of separate routes, change this to:
-  // return currentFilter === "pending"
-  //   ? `${API_URL}/leave-requests?status=pending`
-  //   : `${API_URL}/leave-requests`;
-
   return currentFilter === "pending"
     ? `${API_URL}/leave-requests/pending`
     : `${API_URL}/leave-requests`;

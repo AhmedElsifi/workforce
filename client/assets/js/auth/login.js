@@ -1,3 +1,5 @@
+import { API_URL } from "../config.js";
+
 const loginForm = document.getElementById("login-form");
 
 loginForm.addEventListener("submit", async (e) => {
@@ -6,7 +8,7 @@ loginForm.addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const response = await fetch("http://127.0.0.1:3000/auth/login", {
+  const response = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

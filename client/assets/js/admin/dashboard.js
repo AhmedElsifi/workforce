@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:3000";
+import { API_URL } from "../config.js";
 
 const kpiTotal = document.getElementById("kpi-total");
 const kpiActive = document.getElementById("kpi-active");
