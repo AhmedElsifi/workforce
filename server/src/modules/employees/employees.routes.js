@@ -16,15 +16,38 @@ const employeesRoutes = express.Router();
 
 employeesRoutes.use(express.json());
 
-employeesRoutes.post("/employees", createEmployee);
+employeesRoutes.post(
+  "/employees",
+  authenticate,
+  authorize("admin"),
+  createEmployee);
 
-employeesRoutes.get("/employees", getEmployees);
+employeesRoutes.get(
+  "/employees",
+  authenticate,
+  authorize("admin"),
+  getEmployees);
 
-employeesRoutes.get("/employees/:id", checkId, getEmployeeById);
+employeesRoutes.get(
+  "/employees/:id",
+  authenticate,
+  authorize("admin"),
+  checkId,
+  getEmployeeById);
 
-employeesRoutes.put("/employees/:id", checkId, updateEmployee);
+employeesRoutes.put(
+  "/employees/:id",
+  authenticate,
+  authorize("admin"),
+  checkId,
+  updateEmployee);
 
-employeesRoutes.patch("/employees/:id/deactivate", checkId, deactivateEmployee);
+employeesRoutes.patch(
+  "/employees/:id/deactivate",
+  authenticate,
+  authorize("admin"),
+  checkId,
+  deactivateEmployee);
 
 employeesRoutes.get(
   "/employees/department/my-team",

@@ -17,7 +17,6 @@ departmentsRoutes.get("/departments", authenticate, authorize("admin", "manager"
 departmentsRoutes.get("/departments/:id", authenticate, authorize("admin", "manager"), checkId, getDepartmentById);
 departmentsRoutes.get("/departments/:id/employees",
   authenticate,
-
   authorize("admin", "manager"),
   checkId,
   getDepartmentEmployees,
