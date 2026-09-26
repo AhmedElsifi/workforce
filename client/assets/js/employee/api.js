@@ -12,14 +12,12 @@ export class ApiError extends Error {
   }
 }
 
-
 const GENERIC_MESSAGES = {
   401: "Please sign in again to continue.",
   403: "You do not have permission to view this information.",
   404: "We could not find what you were looking for.",
   500: "Something went wrong on our side. Please try again in a moment.",
 };
-
 
 const PASS_THROUGH_STATUSES = new Set([400, 409]);
 
@@ -30,11 +28,7 @@ const FALLBACK_MESSAGE = "Something went wrong. Please try again.";
 
 async function parseBody(response) {
   const contentType = response.headers.get("content-type") ?? "";
-
-  if (!contentType.includes("application/json")) {
-    return null;
-  }
-
+  if (!contentType.includes("application/json")) return null;
   try {
     return await response.json();
   } catch {
@@ -46,7 +40,6 @@ function buildMessage(status, body) {
   if (PASS_THROUGH_STATUSES.has(status) && typeof body?.message === "string") {
     return body.message;
   }
-
   return GENERIC_MESSAGES[status] ?? FALLBACK_MESSAGE;
 }
 
@@ -60,6 +53,16 @@ export async function apiRequest(path, options = {}) {
     });
   } catch {
     throw new ApiError(0, NETWORK_MESSAGE);
+  }
+
+  if (response.status === 401) {
+    window.location.href = "../../pages/auth/session-expired.html";
+    throw new ApiError(401, GENERIC_MESSAGES[401]);
+  }
+
+  if (response.status === 403) {
+    window.location.href = "../../pages/auth/unauthorized.html";
+    throw new ApiError(403, GENERIC_MESSAGES[403]);
   }
 
   const body = await parseBody(response);

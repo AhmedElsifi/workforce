@@ -10,6 +10,7 @@ import dashboardRoutes from "./src/modules/dashboard/dashboard.routes.js";
 import auditRoutes from "./src/modules/audit/audit.routes.js";
 import attendanceRoutes from "./src/modules/attendance/attendance.routes.js";
 import leaveRoutes from "./src/modules/leaveRequests/leaveRequests.routes.js";
+import { errorHandler, notFound } from "./src/middlewares/errorHandler.js";
 
 dbConnection;
 
@@ -19,6 +20,7 @@ app.use(
   cors({
     origin: [
       "http://127.0.0.1:5500",
+      "http://localhost:5500",
       "https://iti-project-workforce.vercel.app",
     ],
     credentials: true,
@@ -35,6 +37,9 @@ app.use(employeesRoutes);
 app.use(departmentsRoutes);
 app.use(leaveRoutes);
 app.use(attendanceRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
   console.log(`server is running on port ${process.env.PORT}`);

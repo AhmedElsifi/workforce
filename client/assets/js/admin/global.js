@@ -1,4 +1,7 @@
 import { API_URL } from "../config.js";
+import { installAuthRedirect } from "../auth/session.js";
+
+installAuthRedirect();
 
 export async function getCurrentAdmin() {
   const res = await fetch(`${API_URL}/auth/me`, {
