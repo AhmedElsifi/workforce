@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken";
 import userModel from "../../../db/models/user.model.js";
-import { validateLogin } from "./auth.validation.js";
+import {
+  validateLogin,
+  validateProfileUpdate,
+  validateProfileUpdateAdmin,
+} from "./auth.validation.js";
 import bcrypt from "bcrypt";
 import { logActivity } from "../audit/audit.controller.js";
 import { AppError } from "../../middlewares/errorHandler.js";
@@ -121,25 +125,36 @@ const updateCurrentUser = async (req, res) => {
   );
 
   if (invalidField) {
-    throw new AppError(400, `Field '${invalidField}' cannot be updated`);
+    throw new AppError(400, `Field '${invalidField}' cannot be updated`, {
+      [invalidField]: `Field '${invalidField}' cannot be updated`,
+    });
+  }
+
+  const validationErrors =
+    userRole === "admin"
+      ? validateProfileUpdateAdmin(req.body)
+      : validateProfileUpdate(req.body);
+
+  if (Object.keys(validationErrors).length > 0) {
+    throw new AppError(400, "Validation failed", validationErrors);
   }
 
   const updates = {};
 
-  if (req.body.fname !== undefined) updates.fname = req.body.fname;
-  if (req.body.lname !== undefined) updates.lname = req.body.lname;
+  if (req.body.fname !== undefined) updates.fname = req.body.fname.trim();
+  if (req.body.lname !== undefined) updates.lname = req.body.lname.trim();
 
   if (req.body.password !== undefined && req.body.password !== "") {
     updates.password = await bcrypt.hash(req.body.password, 10);
   }
 
   if (userRole === "admin") {
-    if (req.body.email !== undefined) updates.email = req.body.email;
+    if (req.body.email !== undefined) updates.email = req.body.email.toLowerCase().trim();
     if (req.body.role !== undefined) updates.role = req.body.role;
     if (req.body.position !== undefined) updates.position = req.body.position;
     if (req.body.department !== undefined)
       updates.department = req.body.department;
-    if (req.body.salary !== undefined) updates.salary = req.body.salary;
+    if (req.body.salary !== undefined) updates.salary = Number(req.body.salary);
     if (req.body.employmentStatus !== undefined)
       updates.employmentStatus = req.body.employmentStatus;
   }

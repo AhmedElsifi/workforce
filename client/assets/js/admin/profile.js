@@ -16,12 +16,67 @@ const fields = {
   employmentStatus: document.getElementById("employmentStatus"),
 };
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function showFeedback(message, type = "success") {
   feedbackEl.textContent = message;
   feedbackEl.className = `feedback ${type}`;
-  setTimeout(() => {
-    feedbackEl.className = "feedback";
-  }, 4000);
+  if (type === "success") {
+    setTimeout(() => {
+      feedbackEl.className = "feedback";
+    }, 4000);
+  }
+}
+
+function clearFeedback() {
+  feedbackEl.className = "feedback";
+  feedbackEl.textContent = "";
+}
+
+function validateForm() {
+  const errors = {};
+
+  const fname = fields.fname.value.trim();
+  const lname = fields.lname.value.trim();
+  const email = fields.email.value.trim();
+  const password = fields.password.value;
+  const salary = fields.salary.value;
+
+  if (!fname) errors.fname = "First name is required";
+  else if (fname.length < 2) errors.fname = "First name must be at least 2 characters";
+
+  if (!lname) errors.lname = "Last name is required";
+  else if (lname.length < 2) errors.lname = "Last name must be at least 2 characters";
+
+  if (!email) errors.email = "Email is required";
+  else if (!EMAIL_REGEX.test(email)) errors.email = "Invalid email format";
+
+  if (password && password.length < 6) {
+    errors.password = "Password must be at least 6 characters";
+  }
+
+  if (salary !== "") {
+    const n = Number(salary);
+    if (!Number.isFinite(n) || n < 0) {
+      errors.salary = "Salary must be a non-negative number";
+    }
+  }
+
+  return errors;
+}
+
+function showFieldErrors(errors) {
+  // Clear previous error state
+  for (const key of Object.keys(fields)) {
+    const el = fields[key];
+    el.setCustomValidity?.("");
+  }
+
+  const firstKey = Object.keys(errors)[0];
+  if (firstKey && fields[firstKey]) {
+    fields[firstKey].setCustomValidity(errors[firstKey]);
+    fields[firstKey].reportValidity();
+  }
 }
 
 async function loadProfile() {
@@ -43,6 +98,15 @@ async function loadProfile() {
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  clearFeedback();
+
+  const errors = validateForm();
+  if (Object.keys(errors).length > 0) {
+    showFieldErrors(errors);
+    showFeedback("Please fix the highlighted fields.", "error");
+    return;
+  }
+
   submitBtn.disabled = true;
 
   const payload = {
@@ -79,7 +143,14 @@ form.addEventListener("submit", async (e) => {
       fields.password.value = "";
       showFeedback(data.message || "Profile updated successfully.", "success");
     } else {
-      showFeedback(data.message || "Failed to update profile.", "error");
+      const apiErrors = data?.errors || {};
+      const messages = Object.values(apiErrors).filter(
+        (m) => typeof m === "string",
+      );
+      showFeedback(
+        messages[0] || data?.message || "Failed to update profile.",
+        "error",
+      );
     }
   } catch (error) {
     console.error("Error updating profile:", error);

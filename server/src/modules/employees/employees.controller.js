@@ -1,15 +1,56 @@
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import userModel from "../../../db/models/user.model.js";
 import { validateRegister } from "../auth/auth.validation.js";
 import { logActivity } from "../audit/audit.controller.js";
 import { AppError } from "../../middlewares/errorHandler.js";
 
+const validateEmployeeExtraFields = ({ position, department, salary }) => {
+  const errors = {};
+
+  if (position !== undefined && position !== null && position !== "") {
+    if (typeof position !== "string") {
+      errors.position = "Position must be a string";
+    } else if (position.trim().length > 100) {
+      errors.position = "Position must be at most 100 characters";
+    }
+  }
+
+  if (department !== undefined && department !== null && department !== "") {
+    if (!mongoose.isValidObjectId(department)) {
+      errors.department = "Invalid department ID format";
+    }
+  }
+
+  if (salary !== undefined && salary !== null && salary !== "") {
+    const n = Number(salary);
+    if (!Number.isFinite(n) || n < 0) {
+      errors.salary = "Salary must be a non-negative number";
+    }
+  }
+
+  return errors;
+};
+
 const createEmployee = async (req, res) => {
   const userData = req.body;
 
   const errors = validateRegister(userData);
+  Object.assign(errors, validateEmployeeExtraFields(userData));
+
   if (Object.keys(errors).length > 0) {
     throw new AppError(400, "Validation failed", errors);
+  }
+
+  if (userData.department) {
+    const departmentExists = await mongoose
+      .model("Department")
+      .exists({ _id: userData.department });
+    if (!departmentExists) {
+      throw new AppError(400, "Validation failed", {
+        department: "Selected department does not exist",
+      });
+    }
   }
 
   const existingUser = await userModel.findOne({
@@ -32,7 +73,7 @@ const createEmployee = async (req, res) => {
     role: "employee",
     position: userData.position,
     department: userData.department,
-    salary: userData.salary || 0,
+    salary: Number(userData.salary) || 0,
     employmentStatus: "active",
   });
 
@@ -101,11 +142,44 @@ const getEmployeeById = async (req, res) => {
 const updateEmployee = async (req, res) => {
   const { position, role, salary, department, employmentStatus } = req.body;
 
+  const errors = {};
+
+  if (role !== undefined && !["admin", "manager", "employee"].includes(role)) {
+    errors.role = "Role must be admin, manager, or employee";
+  }
+  if (
+    employmentStatus !== undefined &&
+    !["active", "inactive"].includes(employmentStatus)
+  ) {
+    errors.employmentStatus = "Employment status must be active or inactive";
+  }
+  if (salary !== undefined && salary !== null && salary !== "") {
+    const n = Number(salary);
+    if (!Number.isFinite(n) || n < 0) {
+      errors.salary = "Salary must be a non-negative number";
+    }
+  }
+  if (department !== undefined && department !== null && department !== "") {
+    if (!mongoose.isValidObjectId(department)) {
+      errors.department = "Invalid department ID format";
+    }
+  }
+
+  if (Object.keys(errors).length > 0) {
+    throw new AppError(400, "Validation failed", errors);
+  }
+
   const employee = await userModel
     .findByIdAndUpdate(
       req.params.id,
-      { position, role, salary, department, employmentStatus },
-      { new: true },
+      {
+        position,
+        role,
+        salary: salary === undefined ? undefined : Number(salary),
+        department,
+        employmentStatus,
+      },
+      { new: true, runValidators: true },
     )
     .select("-password");
 
@@ -188,7 +262,9 @@ const updateEmployeeStatus = async (req, res) => {
   const { employmentStatus } = req.body;
 
   if (!["active", "inactive"].includes(employmentStatus)) {
-    throw new AppError(400, "employmentStatus must be 'active' or 'inactive'");
+    throw new AppError(400, "employmentStatus must be 'active' or 'inactive'", {
+      employmentStatus: "Employment status must be active or inactive",
+    });
   }
 
   const managerId = req.user?._id || req.user?.id;

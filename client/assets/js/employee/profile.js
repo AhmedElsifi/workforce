@@ -43,6 +43,36 @@ function renderUnavailable() {
   }
 }
 
+function showInlineError(field, message) {
+  field.setCustomValidity(message);
+  field.reportValidity();
+}
+
+function clearInlineError(field) {
+  field.setCustomValidity("");
+}
+
+function validateForm() {
+  const errors = {};
+  const fname = editableFields.fname.value.trim();
+  const lname = editableFields.lname.value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!fname) errors.fname = "First name is required";
+  else if (fname.length < 2) errors.fname = "First name must be at least 2 characters";
+  else if (fname.length > 50) errors.fname = "First name must be at most 50 characters";
+
+  if (!lname) errors.lname = "Last name is required";
+  else if (lname.length < 2) errors.lname = "Last name must be at least 2 characters";
+  else if (lname.length > 50) errors.lname = "Last name must be at most 50 characters";
+
+  if (password && password.length < 6) {
+    errors.password = "Password must be at least 6 characters";
+  }
+
+  return errors;
+}
+
 async function initProfile() {
   try {
     const employee = await getCurrentEmployee();
@@ -63,12 +93,26 @@ const profileForm = document.getElementById("profileForm");
 profileForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const fname = document.getElementById("fname").value.trim();
-  const lname = document.getElementById("lname").value.trim();
+  [editableFields.fname, editableFields.lname, document.getElementById("password")].forEach(
+    clearInlineError,
+  );
+
+  const errors = validateForm();
+  const firstKey = Object.keys(errors)[0];
+  if (firstKey) {
+    const field =
+      firstKey === "password"
+        ? document.getElementById("password")
+        : editableFields[firstKey];
+    showInlineError(field, errors[firstKey]);
+    return;
+  }
+
+  const fname = editableFields.fname.value.trim();
+  const lname = editableFields.lname.value.trim();
   const password = document.getElementById("password").value;
 
   const payload = { fname, lname };
-
   if (password) {
     payload.password = password;
   }
@@ -76,9 +120,7 @@ profileForm.addEventListener("submit", async (e) => {
   try {
     const res = await fetch(`${API_URL}/auth/me`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify(payload),
     });
@@ -87,12 +129,14 @@ profileForm.addEventListener("submit", async (e) => {
 
     if (res.ok) {
       alert(data.message || "Profile updated successfully!");
-
       document.getElementById("password").value = "";
-
       initProfile();
     } else {
-      alert(data.message || "Failed to update profile. Please try again.");
+      const apiErrors = data?.errors || {};
+      const firstError = Object.values(apiErrors).find(
+        (m) => typeof m === "string",
+      );
+      alert(firstError || data?.message || "Failed to update profile. Please try again.");
     }
   } catch (error) {
     console.error("Error updating profile:", error);
