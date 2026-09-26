@@ -56,7 +56,7 @@ async function loadDashboard() {
     kpiPendingLeave.textContent = data.pendingLeaveRequests;
 
     const { presentToday, absentToday, clockInRate } = data.attendanceOverview;
-    attendanceRing.style.setProperty("--pct", `${clockInRate}%`);
+    attendanceRing.style.setProperty("--progress", `${clockInRate}%`);
     attendanceRateText.textContent = `${clockInRate}%`;
     attendancePresent.textContent = presentToday;
     attendanceAbsent.textContent = absentToday;

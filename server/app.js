@@ -11,6 +11,7 @@ import auditRoutes from "./src/modules/audit/audit.routes.js";
 import attendanceRoutes from "./src/modules/attendance/attendance.routes.js";
 import leaveRoutes from "./src/modules/leaveRequests/leaveRequests.routes.js";
 import { errorHandler, notFound } from "./src/middlewares/errorHandler.js";
+import { seedData } from "./DB seeder.js";
 
 dbConnection;
 
@@ -37,6 +38,8 @@ app.use(employeesRoutes);
 app.use(departmentsRoutes);
 app.use(leaveRoutes);
 app.use(attendanceRoutes);
+
+seedData();
 
 app.use(notFound);
 app.use(errorHandler);

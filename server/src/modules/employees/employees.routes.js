@@ -20,40 +20,45 @@ employeesRoutes.post(
   "/employees",
   authenticate,
   authorize("admin"),
-  createEmployee);
+  createEmployee
+);
 
 employeesRoutes.get(
   "/employees",
   authenticate,
   authorize("admin"),
-  getEmployees);
+  getEmployees
+);
 
 employeesRoutes.get(
   "/employees/:id",
   authenticate,
   authorize("admin"),
   checkId,
-  getEmployeeById);
-
-employeesRoutes.put(
-  "/employees/:id",
-  authenticate,
-  authorize("admin"),
-  checkId,
-  updateEmployee);
-
-employeesRoutes.patch(
-  "/employees/:id/deactivate",
-  authenticate,
-  authorize("admin"),
-  checkId,
-  deactivateEmployee);
+  getEmployeeById
+);
 
 employeesRoutes.get(
   "/employees/department/my-team",
   authenticate,
   authorize("manager"),
   getEmployeesByActiveDepartment,
+);
+
+employeesRoutes.put(
+  "/employees/:id",
+  authenticate,
+  authorize("admin"),
+  checkId,
+  updateEmployee
+);
+
+employeesRoutes.patch(
+  "/employees/:id/deactivate",
+  authenticate,
+  authorize("admin"),
+  checkId,
+  deactivateEmployee
 );
 
 employeesRoutes.patch(
