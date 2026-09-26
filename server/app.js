@@ -39,7 +39,7 @@ app.use(departmentsRoutes);
 app.use(leaveRoutes);
 app.use(attendanceRoutes);
 
-seedData();
+// seedData();
 
 app.use(notFound);
 app.use(errorHandler);
