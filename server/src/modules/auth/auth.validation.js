@@ -53,3 +53,12 @@ export const validateLogin = ({ email, password }) => {
 
   return errors;
 };
+// addtion
+export const validateRegister = ({ fname, lname, email, password }) => {
+  return validateCreds({
+    fname,
+    lname,
+    email,
+    password,
+  });
+};

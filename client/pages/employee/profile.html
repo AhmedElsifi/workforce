@@ -21,7 +21,12 @@
         <div class="brand">WorkForce</div>
         <div class="user-actions">
           <span id="employee-username-mobile">Employee</span>
-          <span class="material-symbols-outlined">logout</span>
+          <span
+            class="material-symbols-outlined"
+            id="mobile-logout-btn"
+            style="cursor: pointer"
+            >logout</span
+          >
         </div>
       </header>
 
@@ -53,9 +58,9 @@
             <li>
               <a href="./attendance.html" class="nav-item">
                 <div class="nav-left">
-                  <span class="material-symbols-outlined nav-icon">
-                    history
-                  </span>
+                  <span class="material-symbols-outlined nav-icon"
+                    >history</span
+                  >
                   <span>Attendance</span>
                 </div>
               </a>
@@ -63,9 +68,9 @@
             <li>
               <a href="./leave-requests.html" class="nav-item">
                 <div class="nav-left">
-                  <span class="material-symbols-outlined nav-icon">
-                    description
-                  </span>
+                  <span class="material-symbols-outlined nav-icon"
+                    >description</span
+                  >
                   <span>My Leave Requests</span>
                 </div>
               </a>
@@ -89,7 +94,11 @@
               <p id="employee-position">&mdash;</p>
             </div>
           </div>
-          <div class="logout-btn">
+          <div
+            class="logout-btn"
+            id="desktop-logout-btn"
+            style="cursor: pointer"
+          >
             <span class="material-symbols-outlined">logout</span>
           </div>
         </div>
@@ -144,9 +153,13 @@
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="Enter email address"
-                    required
+                    placeholder="Email address"
+                    readonly
                   />
+                  <small
+                    >Contact your System Administrator to change your registered
+                    email.</small
+                  >
                 </div>
                 <div class="input-group full-width">
                   <label for="password">Password</label>
@@ -179,27 +192,22 @@
             <div class="data-grid">
               <div class="data-group">
                 <span class="data-label">Position</span>
-                <!-- ID for position -->
                 <span class="data-value" id="view-position"></span>
               </div>
               <div class="data-group">
                 <span class="data-label">Department</span>
-                <!-- ID for department -->
                 <span class="data-value" id="view-department"></span>
               </div>
               <div class="data-group">
                 <span class="data-label">Role</span>
-                <!-- ID for role -->
                 <span class="data-value" id="view-role"></span>
               </div>
               <div class="data-group">
                 <span class="data-label">Salary</span>
-                <!-- ID for salary -->
                 <span class="data-value" id="view-salary"></span>
               </div>
               <div class="data-group">
                 <span class="data-label">Employment Status</span>
-                <!-- ID for employment status -->
                 <span
                   class="data-value status-active-text"
                   id="view-status"

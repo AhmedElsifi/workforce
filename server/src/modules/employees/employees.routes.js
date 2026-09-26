@@ -1,21 +1,67 @@
 import express from "express";
+import checkId from "../../middlewares/checkId.js";
 import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
-import { employeeProfile } from "./employees.controller.js";
 
-export const employeesRoutes = express().router;
+import {
+  createEmployee,
+  getEmployees,
+  getEmployeeById,
+  updateEmployee,
+  deactivateEmployee,
+  getEmployeesByActiveDepartment,
+  updateEmployeeStatus,
+} from "./employees.controller.js";
+
+const employeesRoutes = express.Router();
+
+employeesRoutes.use(express.json());
+
+employeesRoutes.post(
+  "/employees",
+  authenticate,
+  authorize("admin"),
+  createEmployee);
 
 employeesRoutes.get(
-  "/employee/profile",
-  //   authenticate,
-  //   authorize("admin"),
-  employeeProfile,
-);
+  "/employees",
+  authenticate,
+  authorize("admin"),
+  getEmployees);
 
 employeesRoutes.get(
-  "/pages/employee/profile.html",
-  //   authenticate,
-  //   authorize("employee"),
-  (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/pages/employee/profile.html"));
-  },
+  "/employees/:id",
+  authenticate,
+  authorize("admin"),
+  checkId,
+  getEmployeeById);
+
+employeesRoutes.put(
+  "/employees/:id",
+  authenticate,
+  authorize("admin"),
+  checkId,
+  updateEmployee);
+
+employeesRoutes.patch(
+  "/employees/:id/deactivate",
+  authenticate,
+  authorize("admin"),
+  checkId,
+  deactivateEmployee);
+
+employeesRoutes.get(
+  "/employees/department/my-team",
+  authenticate,
+  authorize("manager"),
+  getEmployeesByActiveDepartment,
 );
+
+employeesRoutes.patch(
+  "/employees/:id/status",
+  authenticate,
+  authorize("manager"),
+  checkId,
+  updateEmployeeStatus,
+);
+
+export default employeesRoutes;

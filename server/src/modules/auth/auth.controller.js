@@ -1,32 +1,37 @@
 import jwt from "jsonwebtoken";
 import userModel from "../../../db/models/user.model.js";
-import { validateCreds, validateLogin } from "./auth.validation.js";
+import { validateLogin } from "./auth.validation.js";
 import bcrypt from "bcrypt";
+import { logActivity } from "../audit/audit.controller.js";
+import { AppError } from "../../middlewares/errorHandler.js";
 
-let login = async (req, res) => {
+const isProd = process.env.NODE_ENV === "production";
+
+const COOKIE_NAME = "token";
+const COOKIE_MAX_AGE = 24 * 60 * 60 * 1000;
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? "none" : "lax",
+  path: "/",
+  maxAge: COOKIE_MAX_AGE,
+};
+
+const login = async (req, res) => {
   const userData = req.body;
   const errors = validateLogin(userData);
 
-  // checks whether there is errors or not:
   if (Object.keys(errors).length > 0) {
-    return res.status(400).json({
-      success: false,
-      errors,
-    });
+    throw new AppError(400, "Validation failed", errors);
   }
 
-  // exists?
   const existingUser = await userModel.findOne({
     email: userData.email.toLowerCase().trim(),
   });
 
   if (!existingUser) {
-    return res.status(401).json({
-      success: false,
-      errors: {
-        message: "Invalid email or password",
-      },
-    });
+    throw new AppError(401, "Invalid email or password");
   }
 
   const validCredentials = await bcrypt.compare(
@@ -35,155 +40,146 @@ let login = async (req, res) => {
   );
 
   if (!validCredentials) {
-    return res.status(401).json({
-      success: false,
-      errors: {
-        message: "Invalid email or password",
-      },
-    });
+    throw new AppError(401, "Invalid email or password");
   }
 
   const token = jwt.sign(
-    {
-      _id: existingUser._id,
-      role: existingUser.role,
-    },
+    { _id: existingUser._id, role: existingUser.role },
     process.env.JWT_SECRET,
-    {
-      expiresIn: "1d",
-    },
+    { expiresIn: "1d" },
   );
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: false,
-    maxAge: 24 * 60 * 60 * 1000,
+  res.cookie(COOKIE_NAME, token, cookieOptions);
+
+  await logActivity({
+    action: "auth.login",
+    category: "auth",
+    performedBy: existingUser._id,
+    targetType: "User",
+    targetId: existingUser._id,
+    description: `${existingUser.fname} ${existingUser.lname} signed in`,
   });
 
-  return res.status(200).json({
+  res.status(200).json({
     success: true,
     message: "Login successful",
     user: {
-      name: existingUser.name,
+      name: `${existingUser.fname} ${existingUser.lname}`.trim(),
       role: existingUser.role,
     },
   });
 };
 
-let getCurrentUser = async (req, res) => {
-  try {
-    // The route is guarded by authenticate, so the identity comes from the
-    // verified token rather than from anything the client sent.
-    const user = await userModel
-      .findById(req.user._id)
-      .select("fname lname email role position salary employmentStatus");
+const getCurrentUser = async (req, res) => {
+  const user = await userModel
+    .findById(req.user._id)
+    .select(
+      "fname lname email role position salary employmentStatus department",
+    )
+    .populate("department", "name")
+    .lean();
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    return res.status(200).json({
-      fname: user.fname,
-      lname: user.lname,
-      email: user.email,
-      role: user.role,
-      position: user.position ?? null,
-      salary: user.salary,
-      employmentStatus: user.employmentStatus,
-    });
-  } catch (error) {
-    console.error("Get current user error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+  if (!user) {
+    throw new AppError(404, "User not found");
   }
+
+  res.status(200).json({
+    fname: user.fname,
+    lname: user.lname,
+    email: user.email,
+    role: user.role,
+    position: user.position ?? null,
+    salary: user.salary,
+    employmentStatus: user.employmentStatus,
+    department: user.department?.name ?? null,
+  });
 };
 
 const updateCurrentUser = async (req, res) => {
-  try {
-    const employeeId = req.user._id;
+  const employeeId = req.user._id;
+  const userRole = req.user.role;
 
-    const allowedFields = [
-      "fname",
-      "lname",
-      "email",
-      "password",
-    ];
+  const employeeAllowedFields = ["fname", "lname", "password"];
+  const adminAllowedFields = [
+    "fname",
+    "lname",
+    "email",
+    "password",
+    "role",
+    "position",
+    "department",
+    "salary",
+    "employmentStatus",
+  ];
 
-    const receivedFields = Object.keys(req.body);
+  const allowedFields =
+    userRole === "admin" ? adminAllowedFields : employeeAllowedFields;
 
-    const invalidField = receivedFields.find(
-      (field) => !allowedFields.includes(field),
-    );
+  const receivedFields = Object.keys(req.body);
+  const invalidField = receivedFields.find(
+    (field) => !allowedFields.includes(field),
+  );
 
-    if (invalidField) {
-      return res.status(400).json({
-        success: false,
-        message: `Field '${invalidField}' cannot be updated by employee`,
-      });
-    }
+  if (invalidField) {
+    throw new AppError(400, `Field '${invalidField}' cannot be updated`);
+  }
 
-    const updates = {};
+  const updates = {};
 
-    if (req.body.fname !== undefined) {
-      updates.fname = req.body.fname;
-    }
+  if (req.body.fname !== undefined) updates.fname = req.body.fname;
+  if (req.body.lname !== undefined) updates.lname = req.body.lname;
 
-    if (req.body.lname !== undefined) {
-      updates.lname = req.body.lname;
-    }
+  if (req.body.password !== undefined && req.body.password !== "") {
+    updates.password = await bcrypt.hash(req.body.password, 10);
+  }
 
-    if (req.body.email !== undefined) {
-      updates.email = req.body.email;
-    }
+  if (userRole === "admin") {
+    if (req.body.email !== undefined) updates.email = req.body.email;
+    if (req.body.role !== undefined) updates.role = req.body.role;
+    if (req.body.position !== undefined) updates.position = req.body.position;
+    if (req.body.department !== undefined)
+      updates.department = req.body.department;
+    if (req.body.salary !== undefined) updates.salary = req.body.salary;
+    if (req.body.employmentStatus !== undefined)
+      updates.employmentStatus = req.body.employmentStatus;
+  }
 
-    if (req.body.password !== undefined) {
-      updates.password = await bcrypt.hash(req.body.password, 10);
-    }
-
-    const user = await userModel.findByIdAndUpdate(
-      employeeId,
-      updates,
-      {
-        new: true,
-        runValidators: true,
-      },
-    ).select(
+  const user = await userModel
+    .findByIdAndUpdate(employeeId, updates, {
+      new: true,
+      runValidators: true,
+    })
+    .select(
       "fname lname email position department role salary employmentStatus",
     );
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Employee not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Profile updated successfully",
-      user,
-    });
-  } catch (error) {
-    console.error("Update profile error:", error);
-
-    if (error.code === 11000 && error.keyPattern?.email) {
-      return res.status(409).json({
-        success: false,
-        message: "Email is already in use",
-      });
-    }
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+  if (!user) {
+    throw new AppError(404, "User not found");
   }
+
+  await logActivity({
+    action: "auth.profile.update",
+    category: "auth",
+    performedBy: employeeId,
+    targetType: "User",
+    targetId: employeeId,
+    description: `${user.fname} ${user.lname} updated their profile`,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    user,
+  });
 };
 
-export { login, getCurrentUser, updateCurrentUser };
+const logout = async (req, res) => {
+  res.clearCookie(COOKIE_NAME, cookieOptions);
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+};
+
+export { login, getCurrentUser, updateCurrentUser, logout };

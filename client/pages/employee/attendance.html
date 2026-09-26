@@ -21,7 +21,12 @@
         <div class="brand">WorkForce</div>
         <div class="user-actions">
           <span id="employee-username-mobile">Employee</span>
-          <span class="material-symbols-outlined">logout</span>
+          <span
+            class="material-symbols-outlined"
+            id="mobile-logout-btn"
+            style="cursor: pointer"
+            >logout</span
+          >
         </div>
       </header>
 
@@ -37,7 +42,7 @@
           </div>
         </div>
 
-        <nav class="nav-menu" aria-label="Employee navigation">
+        <nav class="nav-menu">
           <div class="nav-label">Navigation</div>
           <ul>
             <li>
@@ -51,15 +56,11 @@
               </a>
             </li>
             <li>
-              <a
-                href="./attendance.html"
-                class="nav-item active"
-                aria-current="page"
-              >
+              <a href="./attendance.html" class="nav-item active">
                 <div class="nav-left">
-                  <span class="material-symbols-outlined nav-icon">
-                    history
-                  </span>
+                  <span class="material-symbols-outlined nav-icon"
+                    >history</span
+                  >
                   <span>Attendance</span>
                 </div>
               </a>
@@ -67,9 +68,9 @@
             <li>
               <a href="./leave-requests.html" class="nav-item">
                 <div class="nav-left">
-                  <span class="material-symbols-outlined nav-icon">
-                    description
-                  </span>
+                  <span class="material-symbols-outlined nav-icon"
+                    >description</span
+                  >
                   <span>My Leave Requests</span>
                 </div>
               </a>
@@ -93,7 +94,11 @@
               <p id="employee-position">&mdash;</p>
             </div>
           </div>
-          <div class="logout-btn">
+          <div
+            class="logout-btn"
+            id="desktop-logout-btn"
+            style="cursor: pointer"
+          >
             <span class="material-symbols-outlined">logout</span>
           </div>
         </div>
@@ -209,7 +214,11 @@
               </p>
               <p class="state-text" id="history-error-message"></p>
               <div class="state-actions">
-                <button type="button" id="history-retry" class="btn btn--primary">
+                <button
+                  type="button"
+                  id="history-retry"
+                  class="btn btn--primary"
+                >
                   <span class="material-symbols-outlined">refresh</span>
                   Try again
                 </button>

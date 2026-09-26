@@ -1,8 +1,12 @@
 import express from "express";
 import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
-import { adminDashboard, employeeDashboard  } from "./dashboard.controller.js";
+import {
+  adminDashboard,
+  managerDashboard,
+  employeeDashboard,
+} from "./dashboard.controller.js";
 
-export const dashboardRoutes = express().router;
+const dashboardRoutes = express().router;
 
 dashboardRoutes.get(
   "/employee/dashboard",
@@ -11,21 +15,25 @@ dashboardRoutes.get(
   employeeDashboard,
 );
 
-
-
-
 dashboardRoutes.get(
-  "/admin/dashboard",
+  "/dashboard/admin",
   authenticate,
   authorize("admin"),
   adminDashboard,
 );
 
 dashboardRoutes.get(
-  "/pages/admin/dashboard.html",
+  "/dashboard/manager",
   authenticate,
-  authorize("admin"),
-  (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/pages/admin/dashboard.html"));
-  },
+  authorize("manager"),
+  managerDashboard,
 );
+
+dashboardRoutes.get(
+  "/dashboard/employee",
+  authenticate,
+  authorize("employee"),
+  employeeDashboard,
+);
+
+export default dashboardRoutes;

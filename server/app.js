@@ -1,13 +1,16 @@
 import express from "express";
 import "dotenv/config";
 import dbConnection from "./db/dbConnection.js";
-import { authRoutes } from "./src/modules/auth/auth.routes.js";
 import cookieParser from "cookie-parser";
-import { employeesRoutes } from "./src/modules/employees/employees.routes.js";
-import { dashboardRoutes } from "./src/modules/dashboard/dashboard.routes.js";
-import { attendanceRoutes } from "./src/modules/attendance/attendance.routes.js";
 import cors from "cors";
-import { seedData } from "./DB seeder.js";
+import authRoutes from "./src/modules/auth/auth.routes.js";
+import departmentsRoutes from "./src/modules/departments/departments.routes.js";
+import employeesRoutes from "./src/modules/employees/employees.routes.js";
+import dashboardRoutes from "./src/modules/dashboard/dashboard.routes.js";
+import auditRoutes from "./src/modules/audit/audit.routes.js";
+import attendanceRoutes from "./src/modules/attendance/attendance.routes.js";
+import leaveRoutes from "./src/modules/leaveRequests/leaveRequests.routes.js";
+import { errorHandler, notFound } from "./src/middlewares/errorHandler.js";
 
 dbConnection;
 
@@ -15,26 +18,29 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://127.0.0.1:5500",
+    origin: [
+      "http://127.0.0.1:5500",
+      "http://localhost:5500",
+      "https://iti-project-workforce.vercel.app",
+    ],
     credentials: true,
   }),
 );
-
-// call this function once and then comment it again (used to add dummy data to the database):
-// seedData();
 
 app.use(express.json());
 app.use(cookieParser());
 
 app.use(authRoutes);
 app.use(dashboardRoutes);
+app.use(auditRoutes);
 app.use(employeesRoutes);
+app.use(departmentsRoutes);
+app.use(leaveRoutes);
 app.use(attendanceRoutes);
 
-app.listen(3000, () => {
-  console.log("server is running on port 3000");
-});
-const leaveRoutes = require('./src/modules/leaveRequests/leaveRequests.routes');
+app.use(notFound);
+app.use(errorHandler);
 
-// Mount Leave Management Routes
-app.use('/api/leave-requests', leaveRoutes);
+app.listen(process.env.PORT, () => {
+  console.log(`server is running on port ${process.env.PORT}`);
+});

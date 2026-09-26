@@ -3,22 +3,34 @@ import {
   getCurrentUser,
   login,
   updateCurrentUser,
+  logout,
 } from "./auth.controller.js";
 
-import {
-  authenticate,
-  authorize,
-} from "../../middlewares/auth.middleware.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 
-export const authRoutes = express().router;
+const authRoutes = express.Router();
 
 authRoutes.post("/auth/login", login);
 
-authRoutes.get("/auth/me", authenticate, getCurrentUser);
+authRoutes.get(
+  "/auth/me",
+  authenticate,
+  authorize("employee", "manager", "admin"),
+  getCurrentUser,
+);
 
 authRoutes.patch(
   "/auth/me",
   authenticate,
-  authorize("employee"),
+  authorize("employee", "manager", "admin"),
   updateCurrentUser,
 );
+
+authRoutes.post(
+  "/auth/logout",
+  authenticate,
+  authorize("employee", "manager", "admin"),
+  logout,
+);
+
+export default authRoutes;
