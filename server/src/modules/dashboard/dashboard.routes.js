@@ -16,13 +16,6 @@ dashboardRoutes.get(
 );
 
 dashboardRoutes.get(
-  "/admin/dashboard",
-  authenticate,
-  authorize("admin"),
-  adminDashboard,
-);
-
-dashboardRoutes.get(
   "/dashboard/admin",
   authenticate,
   authorize("admin"),

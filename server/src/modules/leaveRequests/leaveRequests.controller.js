@@ -10,21 +10,12 @@ const createLeaveRequest = async (req, res) => {
       return res.status(400).json({ message: "All leave fields are required" });
     }
 
-    if (!employeeId || !leaveType || !startDate || !endDate || !reason) {
-      return res.status(400).json({
-        message:
-          "employeeId, leaveType, startDate, endDate and reason are required",
-      });
-    }
-
-    // End date must be after start date
     if (new Date(startDate) > new Date(endDate)) {
       return res
         .status(400)
         .json({ message: "End date must be after start date" });
     }
 
-    // 2. Validation: Check for overlapping leave requests
     const existingLeave = await leaveRequestModel.findOne({
       employeeId,
       status: { $in: ["Pending", "Approved"] },
