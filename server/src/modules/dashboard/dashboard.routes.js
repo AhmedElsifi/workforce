@@ -6,7 +6,7 @@ import {
   employeeDashboard,
 } from "./dashboard.controller.js";
 
-const dashboardRoutes = express().router;
+const dashboardRoutes = express.Router();
 
 dashboardRoutes.get(
   "/employee/dashboard",

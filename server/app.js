@@ -17,13 +17,21 @@ dbConnection;
 
 const app = express();
 
+const allowedOrigins = [
+  "http://127.0.0.1:5500",
+  "http://localhost:5500",
+  "http://localhost:5173",                 // Vite dev server
+  "https://iti-project-workforce.vercel.app", // existing deployed frontend
+];
+
+// Add the Vercel frontend URL from environment variable
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(
   cors({
-    origin: [
-      "http://127.0.0.1:5500",
-      "http://localhost:5500",
-      "https://iti-project-workforce.vercel.app",
-    ],
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
@@ -39,11 +47,18 @@ app.use(departmentsRoutes);
 app.use(leaveRoutes);
 app.use(attendanceRoutes);
 
-// seedData();
+// seedData(); // Uncomment only if you need to seed on first deploy
 
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(process.env.PORT, () => {
-  console.log(`server is running on port ${process.env.PORT}`);
-});
+// Export the app for Vercel serverless
+export default app;
+
+// Only listen when running locally (not on Vercel)
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`server is running on port ${PORT}`);
+  });
+}
