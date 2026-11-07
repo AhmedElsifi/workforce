@@ -12,52 +12,57 @@ import attendanceRoutes from "./src/modules/attendance/attendance.routes.js";
 import leaveRoutes from "./src/modules/leaveRequests/leaveRequests.routes.js";
 import { errorHandler, notFound } from "./src/middlewares/errorHandler.js";
 
-dbConnection;
-
 const app = express();
 
-// Required on Vercel: trust the proxy so secure cookies + req.protocol behave correctly
+// Vercel terminates TLS in front of your function — trust the proxy
+// so secure cookies and req.protocol behave correctly.
 app.set("trust proxy", 1);
 
-// Exact origins allowed to call the API
 const allowedOrigins = [
   "http://127.0.0.1:5500",
   "http://localhost:5500",
   "http://localhost:5173",
   "http://localhost:3000",
+  "https://itiproject-workforce.vercel.app",
 ];
 
 if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL.trim().replace(/\/+$/, ""));
+  const frontendUrl = process.env.FRONTEND_URL.trim().replace(/\/+$/, "");
+  if (!allowedOrigins.includes(frontendUrl)) {
+    allowedOrigins.push(frontendUrl);
+  }
 }
 
 console.log("Allowed CORS origins:", allowedOrigins);
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Same-origin / curl / Postman requests have no Origin header — allow them.
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.includes(origin)) return cb(null, true);
     console.warn(`CORS blocked origin: ${origin}`);
-    return callback(null, false);
+    return cb(null, false);
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-  exposedHeaders: ["Set-Cookie"],
 };
 
 app.use(cors(corsOptions));
-
-// Explicitly answer preflight requests (required for POST/PUT/PATCH with JSON body)
 app.options(/.*/, cors(corsOptions));
-
 app.use(express.json());
 app.use(cookieParser());
+
+// Wait for MongoDB to be ready before touching any route.
+// Without this, the first request on a cold start will buffer for 10s and fail.
+app.use(async (req, res, next) => {
+  try {
+    await dbConnection;
+    next();
+  } catch (err) {
+    console.error("DB not ready for request:", err.message);
+    next(err);
+  }
+});
 
 app.use(authRoutes);
 app.use(dashboardRoutes);
