@@ -2,7 +2,7 @@ import express from "express";
 import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 import { getAllLogs, getRecentActivity } from "./audit.controller.js";
 
-const auditRoutes = express().router;
+const auditRoutes = express.Router();
 
 auditRoutes.get("/audit", authenticate, authorize("admin"), getAllLogs);
 
